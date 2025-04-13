@@ -1,0 +1,54 @@
+@import "./base.css";
+
+*,
+body {
+  font-family: "Inter", sans-serif;
+}
+
+.d-grid {
+  display: grid;
+}
+
+.container {
+  width: 1128px;
+  max-width: calc(100% - 32px);
+  min-height: 100%;
+  margin: auto;
+  background-color: #ecf7f1;
+  box-shadow: -8px 0 10px -4px rgba(0, 0, 0, 0.1), 8px 0 10px -4px rgba(0, 0, 0, 0.1);
+}
+
+.text-ellipsis {
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.title {
+  font-size: 1.375rem;
+  line-height: 1.75rem;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+.title-mobile {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+label {
+  font-size: 1rem;
+  line-height: 1.75rem;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+
+p {
+  font-size: 1rem;
+  line-height: 1.75rem;
+  font-weight: 400;
+  letter-spacing: 0;
+}
