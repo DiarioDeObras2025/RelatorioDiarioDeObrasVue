@@ -1,12 +1,14 @@
 import type { Obra } from "@/domain/entities/obra/Obra";
 import type { IObraRepository } from "@/domain/interface/obra/IObraRepository";
 import api from "@/config/axios";
-import { HttpStatusCodeEnum } from "@/domain/enums/HttpStatusCode.enum";
 import { handleApiResponse } from "@/utils/api";
 
 const apiUrl = "https://localhost:7159/Obra";
 
 export class ObraRepository implements IObraRepository {
+  getTotalRegistro(): Promise<number> {
+    return handleApiResponse<number>(api.get(`registroDiario/total`));
+  }
   async getAll(): Promise<Obra[]> {
     return await handleApiResponse<Obra[]>(api.get(apiUrl));
   }

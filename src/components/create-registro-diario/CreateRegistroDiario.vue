@@ -19,21 +19,43 @@ const loading = ref(false);
 const obraId = Number(route.params.id);
 
 const registro = ref<RegistroDiario>(
-  props.registro ? RegistroDiario.fromPartial(props.registro) : RegistroDiario.createEmpty()
+  props.registro ? RegistroDiario.fromPartial(props.registro) : RegistroDiario.createEmpty(),
 );
 
 const materiaisComuns = ref([
-  "Tijolos", "Areia", "Brita", "Tubo PVC", "Argamassa", "Tinta", "Ferro", "Madeira", "Concreto",
-  "Telhas", "Vergalhões", "Blocos", "Rejunte"
+  "Tijolos",
+  "Areia",
+  "Brita",
+  "Tubo PVC",
+  "Argamassa",
+  "Tinta",
+  "Ferro",
+  "Madeira",
+  "Concreto",
+  "Telhas",
+  "Vergalhões",
+  "Blocos",
+  "Rejunte",
 ]);
 
 const unidadesMedida = ref(["kg", "g", "L", "mL", "m", "cm", "mm", "un", "sacos", "ton"]);
 
 const cargosComuns = ref([
-  "Pedreiro", "Servente", "Mestre de Obras", "Encarregado",
-  "Eletricista", "Encanador", "Carpinteiro", "Armador",
-  "Pintor", "Ajudante", "Engenheiro", "Arquiteto",
-  "Técnico", "Segurança", "Outro"
+  "Pedreiro",
+  "Servente",
+  "Mestre de Obras",
+  "Encarregado",
+  "Eletricista",
+  "Encanador",
+  "Carpinteiro",
+  "Armador",
+  "Pintor",
+  "Ajudante",
+  "Engenheiro",
+  "Arquiteto",
+  "Técnico",
+  "Segurança",
+  "Outro",
 ]);
 
 export interface Material {
@@ -84,7 +106,7 @@ watch(
       registro.value = RegistroDiario.fromPartial(novoRegistro);
     }
   },
-  { immediate: true, deep: true }
+  { immediate: true, deep: true },
 );
 
 const formatDate = (date: Date | null | undefined) =>
@@ -233,13 +255,22 @@ const voltar = () => {
                     ></v-btn>
                   </v-col>
                   <v-col cols="12">
-                    <v-textarea label="Observações" v-model="membro.observacao" rows="1"></v-textarea>
+                    <v-textarea
+                      label="Observações"
+                      v-model="membro.observacao"
+                      rows="1"
+                    ></v-textarea>
                   </v-col>
                 </v-row>
               </v-card-text>
             </v-card>
 
-            <v-btn color="primary" variant="outlined" @click="adicionarMembro" prepend-icon="mdi-plus">
+            <v-btn
+              color="primary"
+              variant="outlined"
+              @click="adicionarMembro"
+              prepend-icon="mdi-plus"
+            >
               Adicionar Membro
             </v-btn>
 
@@ -303,7 +334,12 @@ const voltar = () => {
                   </v-card-text>
                 </v-card>
 
-                <v-btn color="primary" variant="outlined" @click="adicionarMaterial" prepend-icon="mdi-plus">
+                <v-btn
+                  color="primary"
+                  variant="outlined"
+                  @click="adicionarMaterial"
+                  prepend-icon="mdi-plus"
+                >
                   Adicionar Material
                 </v-btn>
               </v-col>
@@ -420,7 +456,6 @@ const voltar = () => {
     </v-card>
   </v-container>
 </template>
-
 
 <style scoped>
 .v-expansion-panel {

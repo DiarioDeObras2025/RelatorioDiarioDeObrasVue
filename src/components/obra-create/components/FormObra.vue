@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { ref, watch } from "vue";
-import { useRoute, useRouter } from "vue-router";
-import TextField from "@/@shared/components/text-field/TextField.vue";
+import { useRouter } from "vue-router";
 import { Obra } from "@/domain/entities/obra/Obra";
 import { ObraRepository } from "@/domain/repositories/obra/ObraRepository";
 import { useToast } from "@/composables/toast/Toast.composable";
@@ -11,10 +10,14 @@ const props = defineProps<{ obra?: Obra }>();
 const router = useRouter();
 const loading = ref(false);
 
-const route = useRoute();
-const obraId = Number(route.params.id);
+const statusObra = Object.entries({
+  0: "Andamento",
+  1: "Cancelada",
+  2: "Planejada",
+  3: "Concluída",
+  4: "Pausada",
+}).map(([value, text]) => ({ value: Number(value), text }));
 
-// Estado da obra
 const obra = ref<Obra>(
   props.obra
     ? new Obra(
@@ -30,9 +33,7 @@ const obra = ref<Obra>(
         props.obra.dataCriacao ?? new Date(),
         props.obra.dataAtualizacao ?? new Date(),
       )
-    : new Obra(
-        0, "", "", "", "", new Date(), "", null, "", new Date(), new Date()
-      ),
+    : new Obra(0, "", "", "", "", new Date(), "", null, "", new Date(), new Date()),
 );
 
 const { showToast } = useToast();
@@ -53,9 +54,7 @@ const salvarObra = async () => {
       status: obra.value.status,
     };
 
-    obra.value.id === 0
-      ? await obraRepo.create(payload)
-      : await obraRepo.update(payload);
+    obra.value.id === 0 ? await obraRepo.create(payload) : await obraRepo.update(payload);
 
     showToast("Obra salva com sucesso!", "success");
     setTimeout(() => router.go(-1), 1500);
@@ -82,7 +81,7 @@ watch(
 );
 
 function formatDate(date: Date | null) {
-  return date ? new Date(date).toLocaleDateString('pt-BR') : 'Não definida';
+  return date ? new Date(date).toLocaleDateString("pt-BR") : "Não definida";
 }
 </script>
 
@@ -212,12 +211,15 @@ function formatDate(date: Date | null) {
           <v-expansion-panel-text>
             <v-row>
               <v-col cols="12">
-                <v-text-field
+                <v-combobox
                   label="Status"
                   v-model="obra.status"
-                  variant="outlined"
+                  :items="statusObra"
+                  item-title="text"
+                  item-value="value"
+                  :return-object="false"
                   prepend-inner-icon="mdi-list-status"
-                ></v-text-field>
+                />
               </v-col>
             </v-row>
           </v-expansion-panel-text>
@@ -227,23 +229,11 @@ function formatDate(date: Date | null) {
       <!-- Ações -->
       <v-card-actions class="pa-0 mt-6">
         <v-spacer></v-spacer>
-        <v-btn
-          @click="voltar"
-          color="primary"
-          variant="outlined"
-          size="large"
-          class="mr-2"
-        >
+        <v-btn @click="voltar" color="primary" variant="outlined" size="large" class="mr-2">
           <v-icon icon="mdi-arrow-left" class="mr-1"></v-icon>
           Voltar
         </v-btn>
-        <v-btn
-          @click="salvarObra"
-          color="primary"
-          size="large"
-          :loading="loading"
-          variant="tonal"
-        >
+        <v-btn @click="salvarObra" color="primary" size="large" :loading="loading" variant="tonal">
           <v-icon icon="mdi-content-save" class="mr-1"></v-icon>
           {{ obra.id === 0 ? "Salvar Obra" : "Atualizar" }}
         </v-btn>

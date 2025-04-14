@@ -11,6 +11,7 @@ import { isAuthenticated } from "./auth_guard";
 import CreateEmpresaVue from "@/components/create-empresa/CreateEmpresa.vue";
 import CreateRegistroDiarioVue from "@/components/create-registro-diario/CreateRegistroDiario.vue";
 import EditRegistroDiarioVue from "@/components/edit-registro-diario/EditRegistroDiario.vue";
+
 const routes = [
   // ✅ Redirecionamento simples sem component
   {

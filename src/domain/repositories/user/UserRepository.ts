@@ -11,21 +11,25 @@ export class UserRepository implements IUserRepository {
 
   async createUser(user: User, registrationToken: string): Promise<any> {
     try {
-      const response = await this.registerAxios.post("/auth/register", {
-        email: user.email,
-        password: user.password,
-        userName: user.userName,
-        phoneNumber: user.phoneNumber
-      }, {
-        headers: {
-          Authorization: `Bearer ${registrationToken}`,
-          "Content-Type": "application/json"
-        }
-      });
+      const response = await this.registerAxios.post(
+        "/auth/register",
+        {
+          email: user.email,
+          password: user.password,
+          userName: user.userName,
+          phoneNumber: user.phoneNumber,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${registrationToken}`,
+            "Content-Type": "application/json",
+          },
+        },
+      );
 
       return {
         status: response.status,
-        data: response.data
+        data: response.data,
       };
     } catch (error: any) {
       if (error.response) {
@@ -33,19 +37,19 @@ export class UserRepository implements IUserRepository {
         throw {
           status: error.response.status,
           message: error.response.data?.message || "Erro ao registrar usuário",
-          errors: error.response.data?.errors
+          errors: error.response.data?.errors,
         };
       } else if (error.request) {
         // A requisição foi feita mas não houve resposta
         throw {
           status: HttpStatusCodeEnum.InternalServerError,
-          message: "Sem resposta do servidor"
+          message: "Sem resposta do servidor",
         };
       } else {
         // Erro ao configurar a requisição
         throw {
           status: HttpStatusCodeEnum.InternalServerError,
-          message: error.message
+          message: error.message,
         };
       }
     }

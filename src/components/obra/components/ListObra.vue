@@ -2,9 +2,6 @@
 import type { Obra } from "@/domain/entities/obra/Obra";
 import { useNavigation } from "@/composables/navigation/Navigation.composable";
 import ObraCardNovo from "./ObraCard.vue";
-import { useDimession } from "@/composables/dimension/Dimension.composable";
-
-const { isDesktop } = useDimession()
 
 defineProps<{
   obras: Obra[];
@@ -24,10 +21,12 @@ function goToObraDetalhe(id: number) {
       <div class="illustration">
         <v-icon icon="mdi-domain" size="80" color="primary" />
       </div>
-      
+
       <h3 class="empty-title">Nenhuma obra cadastrada</h3>
-      <p class="empty-description">Você ainda não possui obras cadastradas. Comece criando uma nova obra.</p>
-      
+      <p class="empty-description">
+        Você ainda não possui obras cadastradas. Comece criando uma nova obra.
+      </p>
+
       <v-btn
         color="primary"
         variant="tonal"
@@ -62,7 +61,7 @@ function goToObraDetalhe(id: number) {
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 24px;
   cursor: pointer;
-  
+
   &.single-item {
     grid-template-columns: minmax(300px, 400px);
     justify-content: center;
@@ -116,26 +115,26 @@ function goToObraDetalhe(id: number) {
   .content-wrapper {
     padding: 16px;
   }
-  
+
   .obra-grid {
     grid-template-columns: 1fr;
     gap: 16px;
-    
+
     &.single-item {
       grid-template-columns: 1fr;
     }
-    
+
     :deep(.v-card) {
       width: 100%;
       margin: 0;
     }
   }
-  
+
   .empty-state {
     height: 60vh;
     padding: 16px;
   }
-  
+
   .empty-title {
     font-size: 1.25rem;
   }

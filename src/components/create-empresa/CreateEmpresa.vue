@@ -41,7 +41,7 @@ async function logar() {
   isLoading.value = true;
   const empresa = new Empresa(0, nomeEmpresa.value);
   const result = await service.createEmpresa(empresa);
-  
+
   if (result.success) {
     // Armazena a empresa no store antes de navegar
     empresaStore.setEmpresaAtual(result.data); // Assumindo que result.data contém a empresa criada

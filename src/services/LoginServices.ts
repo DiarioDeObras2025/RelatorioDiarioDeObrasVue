@@ -15,5 +15,4 @@ export class LoginService {
       return { success: false, message: "Falha ao realizar o login, entre em contato!" };
     }
   }
-  
 }

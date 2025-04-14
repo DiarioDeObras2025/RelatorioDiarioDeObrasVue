@@ -6,6 +6,6 @@ export interface IRegistroDiarioRepository {
   update(obra: RegistroDiario): Promise<void>;
   delete(id: number): Promise<void>;
   put(obra: RegistroDiario): Promise<void>;
-  getRelatorioFromObraid(idObra: number): Promise<RegistroDiario[]> 
-  gerarPdf(idRegistro:number, idObra: number) : void
+  getRelatorioFromObraid(idObra: number): Promise<RegistroDiario[]>;
+  gerarPdf(idRegistro: number, idObra: number): void;
 }
