@@ -23,7 +23,7 @@ export class ObraRepository implements IObraRepository {
   }
 
   async create(obra: Obra): Promise<any> {
-    return await handleApiResponse(api.post(apiUrl, obra), HttpStatusCodeEnum.Created);
+    return await handleApiResponse(api.post(apiUrl, obra));
   }
 
   async update(obra: Obra): Promise<any> {

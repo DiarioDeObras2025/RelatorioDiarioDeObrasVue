@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
-
 import {
   RegistroDiario,
   CondicaoClimaticaEnum,
@@ -10,125 +9,74 @@ import {
 import { RegistroDiarioRepository } from "@/domain/repositories/registro-diario/RegistroDiarioRepository";
 import { useToast } from "@/composables/toast/Toast.composable";
 
-const registroRepo = new RegistroDiarioRepository();
 const props = defineProps<{ registro?: RegistroDiario }>();
 const router = useRouter();
-const loading = ref(false);
-
 const route = useRoute();
-const obraId = Number(route.params.id);
-
-// Listas para selects
-const materiaisComuns = ref([
-  "Cimento",
-  "Tijolos",
-  "Areia",
-  "Brita",
-  "Tubo PVC",
-  "Argamassa",
-  "Tinta",
-  "Ferro",
-  "Madeira",
-  "Concreto",
-  "Telhas",
-  "Vergalhões",
-  "Blocos",
-  "Rejunte",
-]);
-
-const condicoesClimaticas = ref([
-  { value: CondicaoClimaticaEnum.ENSOLARADO, text: "Ensolarado" },
-  { value: CondicaoClimaticaEnum.PARCIALMENTE_NUBLADO, text: "Parcialmente Nublado" },
-  { value: CondicaoClimaticaEnum.NUBLADO, text: "Nublado" },
-  { value: CondicaoClimaticaEnum.CHUVOSO, text: "Chuvoso" },
-  { value: CondicaoClimaticaEnum.CHUVA_FORTE, text: "Chuva Forte" },
-  { value: CondicaoClimaticaEnum.TEMPESTADE, text: "Tempestade" },
-]);
-
-const etapasObra = ref([
-  { value: EtapaObraEnum.PREPARACAO_TERRENO, text: "Preparação do terreno" },
-  { value: EtapaObraEnum.FUNDACAO, text: "Fundação" },
-  { value: EtapaObraEnum.ESTRUTURA, text: "Estrutura" },
-  { value: EtapaObraEnum.ALVENARIA, text: "Alvenaria" },
-  { value: EtapaObraEnum.INSTALACOES, text: "Instalações" },
-  { value: EtapaObraEnum.COBERTURA, text: "Cobertura" },
-  { value: EtapaObraEnum.ACABAMENTO, text: "Acabamento" },
-]);
-// Estado do registro
-const registro = ref<RegistroDiario>(
-  props.registro ? RegistroDiario.fromPartial(props.registro) : RegistroDiario.createEmpty(),
-);
-
 const { showToast } = useToast();
 
-type RegistroDiarioPayload = {
-  id: number;
-  data: Date; // Date convertido em string ISO
-  obraId: number;
-  resumo: string;
-  condicoesClimaticas: CondicaoClimaticaEnum;
-  totalFuncionarios: number;
-  totalTerceirizados: number;
-  horasTrabalhadas: number;
-  equipamentos: string;
-  consumoCimento: number;
-  materiais: string[];
-  etapa: EtapaObraEnum;
-  percentualConcluido: number;
-  areaExecutada: number;
-  ocorrencias: string;
-  temperatura: string;
-  precipitacao: number | null;
-  assinaturaResponsavel: string;
-  dataAssinatura: Date | null;
-  titulo: string;
-};
+const registroRepo = new RegistroDiarioRepository();
+const loading = ref(false);
+const obraId = Number(route.params.id);
 
-const salvarRegistro = async () => {
-  loading.value = true;
+const registro = ref<RegistroDiario>(
+  props.registro ? RegistroDiario.fromPartial(props.registro) : RegistroDiario.createEmpty()
+);
 
-  try {
-    const payload: RegistroDiarioPayload = {
-      id: registro.value.id,
-      data: registro.value.data!,
-      obraId: obraId,
-      resumo: registro.value.resumo,
-      condicoesClimaticas: registro.value.condicoesClimaticas,
-      totalFuncionarios: registro.value.totalFuncionarios,
-      totalTerceirizados: registro.value.totalTerceirizados,
-      horasTrabalhadas: registro.value.horasTrabalhadas,
-      equipamentos: registro.value.equipamentos,
-      consumoCimento: registro.value.consumoCimento,
-      materiais: registro.value.materiais,
-      etapa: registro.value.etapa,
-      percentualConcluido: registro.value.percentualConcluido,
-      areaExecutada: registro.value.areaExecutada,
-      ocorrencias: registro.value.ocorrencias,
-      temperatura: registro.value.temperatura,
-      precipitacao: registro.value.precipitacao,
-      assinaturaResponsavel: registro.value.assinaturaResponsavel,
-      dataAssinatura: registro.value.dataAssinatura ? registro.value.dataAssinatura : null,
-      titulo: registro.value.titulo,
-    };
+const materiaisComuns = ref([
+  "Tijolos", "Areia", "Brita", "Tubo PVC", "Argamassa", "Tinta", "Ferro", "Madeira", "Concreto",
+  "Telhas", "Vergalhões", "Blocos", "Rejunte"
+]);
 
-      registro.value.id === 0
-        ? await registroRepo.create(payload)
-        : await registroRepo.update(payload);
+const unidadesMedida = ref(["kg", "g", "L", "mL", "m", "cm", "mm", "un", "sacos", "ton"]);
 
-        showToast("Registro salvo com sucesso!", "success");
-        setTimeout(() => router.go(-1), 1500);
-  } catch (error) {
-  console.error("Erro ao salvar:", error);
-  showToast(error instanceof Error ? error.message : "Erro desconhecido", "red");
-} finally {
-    loading.value = false;
-  }
-};
-function gotoListRegistro() {
-  router.go(-1);
+const cargosComuns = ref([
+  "Pedreiro", "Servente", "Mestre de Obras", "Encarregado",
+  "Eletricista", "Encanador", "Carpinteiro", "Armador",
+  "Pintor", "Ajudante", "Engenheiro", "Arquiteto",
+  "Técnico", "Segurança", "Outro"
+]);
+
+export interface Material {
+  nome: string;
+  quantidade: number;
+  unidade: string;
 }
 
-// Watch para atualizar registro se a prop mudar
+export interface MembroEquipe {
+  nome: string;
+  cargo: string;
+  terceirizado: boolean;
+  observacao?: string;
+}
+
+function adicionarMaterial() {
+  registro.value.materiais ||= [];
+  registro.value.materiais.push({ nome: "", quantidade: 0, unidade: "un" });
+}
+
+function adicionarMembro() {
+  registro.value.equipe ||= [];
+  registro.value.equipe.push({ nome: "", cargo: "", terceirizado: false, observacao: "" });
+}
+
+function removerMembro(index: number) {
+  registro.value.equipe.splice(index, 1);
+}
+
+function removerMaterial(index: number) {
+  registro.value.materiais.splice(index, 1);
+}
+
+const condicoesClimaticas = Object.values(CondicaoClimaticaEnum).map((value) => ({
+  value,
+  text: value.charAt(0) + value.slice(1).toLowerCase().replace("_", " "),
+}));
+
+const etapasObra = Object.values(EtapaObraEnum).map((value) => ({
+  value,
+  text: value.charAt(0) + value.slice(1).toLowerCase().replace("_", " "),
+}));
+
 watch(
   () => props.registro,
   (novoRegistro) => {
@@ -136,62 +84,88 @@ watch(
       registro.value = RegistroDiario.fromPartial(novoRegistro);
     }
   },
-  { immediate: true, deep: true },
+  { immediate: true, deep: true }
 );
 
-function formatDate(date: any) {
-      // Implemente a formatação da data conforme necessário
-      return date ? new Date(date).toLocaleDateString('pt-BR') : null;
+const formatDate = (date: Date | null | undefined) =>
+  date ? new Date(date).toLocaleDateString("pt-BR") : "Hoje";
+
+const salvarRegistro = async () => {
+  loading.value = true;
+  try {
+    const payload = {
+      ...registro.value,
+      obraId,
+      data: registro.value.data!,
+    };
+
+    if (registro.value.id === 0) {
+      await registroRepo.create(payload);
+    } else {
+      await registroRepo.update(payload);
     }
+
+    showToast("Registro salvo com sucesso!", "success");
+    setTimeout(() => router.go(-1), 1000);
+  } catch (error) {
+    console.error(error);
+    showToast(error instanceof Error ? error.message : "Erro desconhecido", "red");
+  } finally {
+    loading.value = false;
+  }
+};
+
+const voltar = () => {
+  router.go(-1);
+};
 </script>
+
 <template>
   <v-container class="pa-4" style="max-width: 800px">
+    <!-- Cabeçalho -->
+    <v-card-title class="text-h5 font-weight-bold d-flex align-center mb-2">
+      <v-icon icon="mdi-file-document-edit" color="primary" class="mr-2" size="28" />
+      {{ registro.id === 0 ? "Novo Registro Diário" : "Editar Registro Diário" }}
+    </v-card-title>
+
     <!-- Barra de Status -->
-    <v-card class="mb-6" elevation="1">
-      <v-card-text class="d-flex justify-space-between align-center py-3">
-        <div>
+    <v-card class="mb-4" elevation="1">
+      <v-card-text class="d-flex justify-space-between align-center">
+        <div class="d-flex align-center">
           <v-chip color="primary" variant="outlined" class="mr-2">
-            <v-icon icon="mdi-calendar" start></v-icon>
-            {{ formatDate(registro.data) || 'Hoje' }}
+            <v-icon icon="mdi-calendar" start />
+            {{ formatDate(registro.data) }}
           </v-chip>
-          <v-chip v-if="registro.condicoesClimaticas" color="blue-lighten-4">
-            <v-icon icon="mdi-weather-cloudy" start></v-icon>
+          <v-chip v-if="registro.condicoesClimaticas" color="blue-lighten-3">
+            <v-icon icon="mdi-weather-partly-cloudy" start />
             {{ registro.condicoesClimaticas }}
           </v-chip>
         </div>
         <v-btn variant="text" color="primary" size="small">
-          <v-icon icon="mdi-printer" class="mr-1"></v-icon>
+          <v-icon icon="mdi-printer" class="mr-1" />
           Imprimir
         </v-btn>
       </v-card-text>
     </v-card>
 
-    <!-- Cabeçalho -->
-    <v-card-title class="text-h5 font-weight-bold mb-4 d-flex align-center">
-      <v-icon icon="mdi-file-document-edit" color="primary" size="32" class="mr-2"></v-icon>
-      {{ registro.id === 0 ? "Novo Registro Diário" : "Editar Registro" }}
-    </v-card-title>
     <!-- Formulário -->
     <v-card elevation="2" class="pa-6">
       <v-text-field
-                  label="Título do relatório"
-                  v-model="registro.titulo"
-                  rows="2"
-                  prepend-inner-icon="mdi-alert-circle"
-                ></v-text-field>
+        label="Título do Relatório"
+        v-model="registro.titulo"
+        variant="outlined"
+        prepend-inner-icon="mdi-alert-circle"
+        class="mb-4"
+        required
+      />
 
-      <!-- Seção Básica -->
-      <v-card-text class="pa-0">
-        <v-textarea
-          label="Resumo das atividades"
-          variant="outlined"
-          v-model="registro.resumo"
-          rows="4"
-          class="mb-4"
-          placeholder="Descreva as atividades realizadas hoje..."
-          required
-        ></v-textarea>
-      </v-card-text>
+      <v-textarea
+        label="Resumo das atividades"
+        v-model="registro.resumo"
+        variant="outlined"
+        rows="3"
+        required
+      />
 
       <v-row>
         <v-col cols="12" md="6">
@@ -201,71 +175,87 @@ function formatDate(date: any) {
             v-model="registro.data"
             variant="outlined"
             prepend-inner-icon="mdi-calendar"
-          ></v-text-field>
+            required
+          />
         </v-col>
 
         <v-col cols="12" md="6">
           <v-select
             label="Condições Climáticas"
             v-model="registro.condicoesClimaticas"
-            variant="outlined"
             :items="condicoesClimaticas"
-            item-value="value"
             item-title="text"
+            item-value="value"
+            variant="outlined"
             prepend-inner-icon="mdi-weather-cloudy"
+            required
           />
         </v-col>
       </v-row>
 
-      <!-- Seção Expansível 1: Equipe -->
-      <v-expansion-panels class="mt-4">
+      <!-- Painéis Expansíveis -->
+      <v-expansion-panels multiple class="mt-4">
+        <!-- Equipe -->
         <v-expansion-panel>
           <v-expansion-panel-title>
             <v-icon icon="mdi-account-group" class="mr-2"></v-icon>
-            Informações da Equipe
+            Equipe
           </v-expansion-panel-title>
           <v-expansion-panel-text>
-            <v-row>
-              <v-col cols="12" md="6">
-                <v-text-field
-                  label="Total de Funcionários"
-                  type="number"
-                  v-model="registro.totalFuncionarios"
-                  variant="outlined"
-                  min="0"
-                  prepend-inner-icon="mdi-account-hard-hat"
-                ></v-text-field>
-              </v-col>
+            <v-card v-for="(membro, index) in registro.equipe" :key="index" class="mb-4">
+              <v-card-text>
+                <v-row>
+                  <v-col cols="12" sm="4">
+                    <v-text-field
+                      label="Nome"
+                      v-model="membro.nome"
+                      prepend-inner-icon="mdi-account"
+                      required
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="6" sm="3">
+                    <v-combobox
+                      label="Cargo"
+                      v-model="membro.cargo"
+                      :items="cargosComuns"
+                      required
+                    ></v-combobox>
+                  </v-col>
+                  <v-col cols="5" sm="3">
+                    <v-checkbox label="Terceirizado" v-model="membro.terceirizado"></v-checkbox>
+                  </v-col>
+                  <v-col cols="1" sm="2" class="d-flex align-center">
+                    <v-btn
+                      icon="mdi-delete"
+                      variant="text"
+                      color="error"
+                      @click="removerMembro(index)"
+                    ></v-btn>
+                  </v-col>
+                  <v-col cols="12">
+                    <v-textarea label="Observações" v-model="membro.observacao" rows="1"></v-textarea>
+                  </v-col>
+                </v-row>
+              </v-card-text>
+            </v-card>
 
-              <v-col cols="12" md="6">
-                <v-text-field
-                  label="Total de Terceirizados"
-                  type="number"
-                  v-model="registro.totalTerceirizados"
-                  variant="outlined"
-                  min="0"
-                  prepend-inner-icon="mdi-account-group"
-                ></v-text-field>
-              </v-col>
+            <v-btn color="primary" variant="outlined" @click="adicionarMembro" prepend-icon="mdi-plus">
+              Adicionar Membro
+            </v-btn>
 
-              <v-col cols="12">
-                <v-text-field
-                  label="Horas Trabalhadas"
-                  type="number"
-                  v-model="registro.horasTrabalhadas"
-                  variant="outlined"
-                  min="0"
-                  suffix="horas"
-                  prepend-inner-icon="mdi-clock-outline"
-                ></v-text-field>
-              </v-col>
-            </v-row>
+            <v-text-field
+              class="mt-4"
+              label="Horas Trabalhadas"
+              type="number"
+              v-model="registro.horasTrabalhadas"
+              min="0"
+              suffix="h"
+              prepend-inner-icon="mdi-clock-outline"
+            ></v-text-field>
           </v-expansion-panel-text>
         </v-expansion-panel>
-      </v-expansion-panels>
 
-      <!-- Seção Expansível 2: Materiais -->
-      <v-expansion-panels class="mt-2">
+        <!-- Materiais -->
         <v-expansion-panel>
           <v-expansion-panel-title>
             <v-icon icon="mdi-package-variant" class="mr-2"></v-icon>
@@ -274,14 +264,48 @@ function formatDate(date: any) {
           <v-expansion-panel-text>
             <v-row>
               <v-col cols="12">
-                <v-combobox
-                  label="Materiais Utilizados"
-                  v-model="registro.materiais"
-                  multiple
-                  chips
-                  :items="materiaisComuns"
-                  prepend-inner-icon="mdi-package-variant"
-                ></v-combobox>
+                <v-card v-for="(material, index) in registro.materiais" :key="index" class="mb-4">
+                  <v-card-text>
+                    <v-row>
+                      <v-col cols="12" sm="5">
+                        <v-combobox
+                          label="Material"
+                          v-model="material.nome"
+                          :items="materiaisComuns"
+                          prepend-inner-icon="mdi-package-variant"
+                        ></v-combobox>
+                      </v-col>
+                      <v-col cols="6" sm="3">
+                        <v-text-field
+                          label="Quantidade"
+                          v-model="material.quantidade"
+                          type="number"
+                          min="0"
+                          step="0.01"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col cols="5" sm="3">
+                        <v-combobox
+                          label="Unidade"
+                          v-model="material.unidade"
+                          :items="unidadesMedida"
+                        ></v-combobox>
+                      </v-col>
+                      <v-col cols="1" sm="1" class="d-flex align-center">
+                        <v-btn
+                          icon="mdi-delete"
+                          variant="text"
+                          color="error"
+                          @click="removerMaterial(index)"
+                        ></v-btn>
+                      </v-col>
+                    </v-row>
+                  </v-card-text>
+                </v-card>
+
+                <v-btn color="primary" variant="outlined" @click="adicionarMaterial" prepend-icon="mdi-plus">
+                  Adicionar Material
+                </v-btn>
               </v-col>
 
               <v-col cols="12">
@@ -304,187 +328,109 @@ function formatDate(date: any) {
             </v-row>
           </v-expansion-panel-text>
         </v-expansion-panel>
-      </v-expansion-panels>
 
-      <!-- Seção Expansível 3: Progresso -->
-      <v-expansion-panels class="mt-2">
+        <!-- Progresso da Obra -->
         <v-expansion-panel>
           <v-expansion-panel-title>
-            <v-icon icon="mdi-progress-check" class="mr-2"></v-icon>
+            <v-icon icon="mdi-progress-check" class="mr-2" />
             Progresso da Obra
           </v-expansion-panel-title>
           <v-expansion-panel-text>
-            <v-row>
-              <v-col cols="12">
-                <v-select
-                  label="Etapa Atual"
-                  v-model="registro.etapa"
-                  :items="etapasObra"
-                  item-value="value"
-                  item-title="text"
-                  prepend-inner-icon="mdi-construction"
-                ></v-select>
-              </v-col>
-
-              <v-col cols="12">
-                <v-slider
-                  label="Percentual Concluído"
-                  v-model="registro.percentualConcluido"
-                  thumb-label="always"
-                  min="0"
-                  max="100"
-                  step="5"
-                  prepend-icon="mdi-progress-check"
-                ></v-slider>
-              </v-col>
-
-              <v-col cols="12">
-                <v-text-field
-                  label="Área Executada (m²)"
-                  type="number"
-                  v-model="registro.areaExecutada"
-                  min="0"
-                  prepend-inner-icon="mdi-ruler-square"
-                ></v-text-field>
-              </v-col>
-            </v-row>
+            <v-select
+              label="Etapa Atual"
+              v-model="registro.etapa"
+              :items="etapasObra"
+              item-title="text"
+              item-value="value"
+              variant="outlined"
+              prepend-inner-icon="mdi-construction"
+            />
+            <v-slider
+              class="mt-4"
+              label="Percentual Concluído"
+              v-model="registro.percentualConcluido"
+              min="0"
+              max="100"
+              step="5"
+              thumb-label="always"
+            />
+            <v-text-field
+              class="mt-4"
+              label="Área Executada (m²)"
+              type="number"
+              v-model="registro.areaExecutada"
+              variant="outlined"
+              min="0"
+              prepend-inner-icon="mdi-ruler-square"
+            />
           </v-expansion-panel-text>
         </v-expansion-panel>
-      </v-expansion-panels>
 
-      <!-- Seção Expansível 4: Ocorrências -->
-      <v-expansion-panels class="mt-2">
+        <!-- Ocorrências -->
         <v-expansion-panel>
           <v-expansion-panel-title>
-            <v-icon icon="mdi-alert-circle" class="mr-2"></v-icon>
-            Ocorrências e Observações
+            <v-icon icon="mdi-alert" class="mr-2" />
+            Ocorrências
           </v-expansion-panel-title>
           <v-expansion-panel-text>
-            <v-row>
-              <v-col cols="12">
-                <v-textarea
-                  label="Ocorrências Registradas"
-                  v-model="registro.ocorrencias"
-                  rows="2"
-                  prepend-inner-icon="mdi-alert-circle"
-                ></v-textarea>
-              </v-col>
-
+            <v-textarea
+              label="Ocorrências do Dia"
+              v-model="registro.ocorrencias"
+              rows="2"
+              variant="outlined"
+              prepend-inner-icon="mdi-alert"
+            />
+            <v-row class="mt-4">
               <v-col cols="12" md="6">
                 <v-text-field
-                  label="Temperatura Ambiente (ºC)"
+                  label="Temperatura (ºC)"
                   type="number"
                   v-model="registro.temperatura"
+                  variant="outlined"
                   prepend-inner-icon="mdi-thermometer"
-                ></v-text-field>
+                />
               </v-col>
-
               <v-col cols="12" md="6">
                 <v-text-field
                   label="Precipitação (mm)"
                   type="number"
                   v-model="registro.precipitacao"
+                  variant="outlined"
                   min="0"
                   prepend-inner-icon="mdi-weather-pouring"
-                ></v-text-field>
+                />
               </v-col>
             </v-row>
           </v-expansion-panel-text>
         </v-expansion-panel>
       </v-expansion-panels>
 
-      <!-- Seção Expansível 5: Anexos -->
-      <v-expansion-panels class="mt-2">
-        <v-expansion-panel>
-          <v-expansion-panel-title>
-            <v-icon icon="mdi-paperclip" class="mr-2"></v-icon>
-            Anexos e Documentos
-          </v-expansion-panel-title>
-          <!-- <v-expansion-panel-text>
-            <v-file-input
-              label="Fotos do dia"
-              v-model="registro.anexosFotos"
-              multiple
-              accept="image/*"
-              prepend-icon="mdi-camera"
-            ></v-file-input>
-
-            <v-file-input
-              label="Documentos"
-              v-model="registro.anexosDocumentos"
-              multiple
-              accept=".pdf,.doc,.docx"
-              prepend-icon="mdi-file-document"
-              class="mt-4"
-            ></v-file-input>
-          </v-expansion-panel-text> -->
-        </v-expansion-panel>
-      </v-expansion-panels>
-
-      <!-- Ações -->
-      <v-card-actions class="pa-0 mt-6">
-        <v-spacer></v-spacer>
-        <v-btn
-          @click="gotoListRegistro"
-          color="primary"
-          variant="outlined"
-          size="large"
-          class="mr-2"
-        >
-          <v-icon icon="mdi-arrow-left" class="mr-1"></v-icon>
+      <!-- Botões -->
+      <v-card-actions class="mt-6">
+        <v-spacer />
+        <v-btn @click="voltar" variant="outlined" color="primary">
+          <v-icon icon="mdi-arrow-left" class="mr-1" />
           Voltar
         </v-btn>
-        <v-btn
-          @click="salvarRegistro"
-          color="primary"
-          size="large"
-          :loading="loading"
-          variant="tonal"
-        >
-          <v-icon icon="mdi-content-save" class="mr-1"></v-icon>
-          {{ registro.id === 0 ? "Salvar Registro" : "Atualizar" }}
+        <v-btn :loading="loading" @click="salvarRegistro" color="primary" variant="flat">
+          <v-icon icon="mdi-content-save" class="mr-1" />
+          {{ registro.id === 0 ? "Salvar" : "Atualizar" }}
         </v-btn>
       </v-card-actions>
     </v-card>
   </v-container>
 </template>
 
+
 <style scoped>
-/* Estilos melhorados */
-.v-text-field,
-.v-textarea,
-.v-select {
-  background-color: #f8f9fa;
-  border-radius: 8px;
-}
-
-.v-card-text {
-  padding-bottom: 16px;
-}
-
-.v-btn {
-  text-transform: none;
-  letter-spacing: normal;
-}
-
 .v-expansion-panel {
-  margin-bottom: 8px;
-  border-radius: 8px !important;
+  border-radius: 8px;
   border: 1px solid #e0e0e0;
+  margin-bottom: 8px;
 }
 
-.v-expansion-panel-title {
-  min-height: 56px;
-  font-weight: 500;
-}
-
-.v-expansion-panel-text {
-  padding: 16px 0;
-}
-
-/* Melhoria no hover */
 .v-expansion-panel:hover {
-  border-color: var(--primary);
-  transition: border-color 0.3s ease;
+  border-color: var(--v-primary-base);
+  transition: 0.2s ease;
 }
 </style>

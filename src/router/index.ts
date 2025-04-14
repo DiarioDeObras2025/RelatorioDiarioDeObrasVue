@@ -10,7 +10,7 @@ import CreateUserVue from "@/components/create-user/CreateUser.vue";
 import { isAuthenticated } from "./auth_guard";
 import CreateEmpresaVue from "@/components/create-empresa/CreateEmpresa.vue";
 import CreateRegistroDiarioVue from "@/components/create-registro-diario/CreateRegistroDiario.vue";
-
+import EditRegistroDiarioVue from "@/components/edit-registro-diario/EditRegistroDiario.vue";
 const routes = [
   // ✅ Redirecionamento simples sem component
   {
@@ -53,6 +53,12 @@ const routes = [
     path: RoutePath.CREATE_REGISTRO_DIARIO,
     name: RouteName.CREATE_REGISTRO_DIARIO,
     component: CreateRegistroDiarioVue,
+  },
+  {
+    path: RoutePath.EDIT_REGISTRO_DIARIO,
+    name: RouteName.EDIT_REGISTRO_DIARIO,
+    component: EditRegistroDiarioVue,
+    props: true,
   },
 
   {

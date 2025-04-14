@@ -43,6 +43,16 @@ export function useNavigation() {
     });
   };
 
+  const goToEditRegistroDiario = (id: number) => {
+    router.push({
+      name: RouteName.EDIT_REGISTRO_DIARIO,
+      params: {
+        id
+      },
+    });
+  };
+
+
   return {
     goToPath,
     goToObraDetalhePage,
@@ -51,5 +61,6 @@ export function useNavigation() {
     goToCreateEmpreas,
     goToCreateUser,
     goToCreateRegistroDiario,
+    goToEditRegistroDiario
   };
 }

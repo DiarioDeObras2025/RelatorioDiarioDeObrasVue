@@ -1,3 +1,5 @@
+import type { Material, MembroEquipe } from "@/components/create-registro-diario/CreateRegistroDiario.vue";
+
 export enum CondicaoClimaticaEnum {
   ENSOLARADO = "Ensolarado",
   PARCIALMENTE_NUBLADO = "ParcialmenteNublado",
@@ -26,12 +28,11 @@ export class RegistroDiario {
     public obraId: number = 0,
     public resumo: string = "",
     public condicoesClimaticas: CondicaoClimaticaEnum = CondicaoClimaticaEnum.NUBLADO,
-    public totalFuncionarios: number = 0,
-    public totalTerceirizados: number = 0,
+    public equipe: MembroEquipe[] = [],
     public horasTrabalhadas: number = 8,
     public equipamentos: string = "",
     public consumoCimento: number = 0,
-    public materiais: string[] = [],
+    public materiais: Material[] = [],
     public etapa: EtapaObraEnum = EtapaObraEnum.ESTRUTURA,
     public percentualConcluido: number = 0,
     public areaExecutada: number = 0,
@@ -45,7 +46,27 @@ export class RegistroDiario {
 
   // Método factory para criar um registro vazio
   static createEmpty(): RegistroDiario {
-    return new RegistroDiario();
+    return new RegistroDiario(
+      0,          // id
+      null,       // data
+      0,          // obraId
+      "",         // resumo
+      CondicaoClimaticaEnum.ENSOLARADO, // condicoesClimaticas
+      [],         // equipe (agora é MembroEquipe[])
+      8,          // horasTrabalhadas
+      "",         // equipamentos
+      0,          // consumoCimento
+      [],         // materiais (agora é Material[])
+      EtapaObraEnum.ESTRUTURA, // etapa
+      0,          // percentualConcluido
+      0,          // areaExecutada
+      "",         // ocorrencias
+      "",         // temperatura
+      null,       // precipitacao
+      "",         // assinaturaResponsavel
+      null,       // dataAssinatura
+      ""          // titulo
+    );
   }
 
   // Método para criar a partir de um objeto parcial
@@ -56,12 +77,11 @@ export class RegistroDiario {
       partial.obraId ?? 0,
       partial.resumo ?? "",
       partial.condicoesClimaticas ?? CondicaoClimaticaEnum.ENSOLARADO,
-      partial.totalFuncionarios ?? 0,
-      partial.totalTerceirizados ?? 0,
+      partial.equipe ?? [],
       partial.horasTrabalhadas ?? 8,
       partial.equipamentos ?? "",
       partial.consumoCimento ?? 0,
-      partial.materiais ?? [],
+      partial.materiais ?? [], // Agora aceita Material[] ou undefined
       partial.etapa ?? EtapaObraEnum.ESTRUTURA,
       partial.percentualConcluido ?? 0,
       partial.areaExecutada ?? 0,
@@ -70,7 +90,7 @@ export class RegistroDiario {
       partial.precipitacao ?? null,
       partial.assinaturaResponsavel ?? "",
       partial.dataAssinatura ? new Date(partial.dataAssinatura) : null,
-      partial.titulo ?? "",
+      partial.titulo ?? ""
     );
   }
 }
