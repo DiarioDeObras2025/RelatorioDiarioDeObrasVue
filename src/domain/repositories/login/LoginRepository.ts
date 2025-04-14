@@ -9,6 +9,6 @@ const apiUrl = "https://localhost:7159/auth/login";
 export class LoginRepository implements ILoginRepository {
   async logar(login: Login): Promise<any> {
     // return api.post(apiUrl, login);
-    return await handleApiResponse(api.post(apiUrl, login), HttpStatusCodeEnum.Ok);
+    return await handleApiResponse(api.post(apiUrl, login));
   }
 }
