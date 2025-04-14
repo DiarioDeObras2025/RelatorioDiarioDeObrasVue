@@ -4,11 +4,13 @@ import { useRouter } from "vue-router";
 import { Obra } from "@/domain/entities/obra/Obra";
 import { ObraRepository } from "@/domain/repositories/obra/ObraRepository";
 import { useToast } from "@/composables/toast/Toast.composable";
+import { useNavigation } from "@/composables/navigation/Navigation.composable";
 
 const obraRepo = new ObraRepository();
 const props = defineProps<{ obra?: Obra }>();
 const router = useRouter();
 const loading = ref(false);
+const { goToListObra } = useNavigation();
 
 const statusObra = Object.entries({
   0: "Andamento",
@@ -57,7 +59,7 @@ const salvarObra = async () => {
     obra.value.id === 0 ? await obraRepo.create(payload) : await obraRepo.update(payload);
 
     showToast("Obra salva com sucesso!", "success");
-    setTimeout(() => router.go(-1), 1500);
+    setTimeout(() => goToListObra(), 1500);
   } catch (error) {
     console.error("Erro ao salvar:", error);
     showToast(error instanceof Error ? error.message : "Erro desconhecido", "red");
