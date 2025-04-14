@@ -4,16 +4,20 @@ import { RegistroDiarioRepository } from "@/domain/repositories/registro-diario/
 import { onMounted, ref } from "vue";
 import Btn from "@/@shared/components/button/Btn.vue";
 import { useNavigation } from "@/composables/navigation/Navigation.composable";
+import { useRoute } from "vue-router";
 
 const repository = new RegistroDiarioRepository();
 const loading = ref(true);
 const registroDiario = ref<RegistroDiario[]>([]);
-  const { goToEditRegistroDiario } = useNavigation();
+const route = useRoute();
+
+const obraId = Number(route.params.id);
+const { goToEditRegistroDiario } = useNavigation();
 
 async function getAllFromObraId() {
   loading.value = true;
   try {
-    registroDiario.value = await repository.getRelatorioFromObraid(1);
+    registroDiario.value = await repository.getRelatorioFromObraid(obraId);
   } catch (err) {
     console.error(err);
   } finally {
@@ -21,72 +25,153 @@ async function getAllFromObraId() {
   }
 }
 
-function goToEditRegistro(id: number){
-  goToEditRegistroDiario(id)
+function goToEditRegistro(id: number) {
+  goToEditRegistroDiario(id);
 }
 
-
 function gerarPDF(idRelatorio: number, idObra: number) {
-    repository.gerarPdf(idRelatorio, idObra)
-        .catch(error => {
-            console.error('Falha ao gerar PDF:', error);
-            // Aqui você pode adicionar tratamento de erro para o usuário
-        });
+  repository.gerarPdf(idRelatorio, idObra).catch((error) => {
+    console.error("Falha ao gerar PDF:", error);
+  });
 }
 
 onMounted(async () => {
-  getAllFromObraId();
+  await getAllFromObraId();
 });
 
+const formatarData = (dataString: string | Date): string => {
+  if (!dataString) return "Não definida";
+
+  const data = new Date(dataString);
+  if (isNaN(data.getTime())) return "Data inválida";
+
+  const dia = String(data.getDate()).padStart(2, "0");
+  const mes = String(data.getMonth() + 1).padStart(2, "0");
+  const ano = data.getFullYear();
+
+  return `${dia}/${mes}/${ano}`;
+};
+
+const getClimaIcon = (condicao: any) => {
+  const icons = [
+    "mdi-weather-sunny", // 0 - Ensolarado
+    "mdi-weather-partly-cloudy", // 1 - Parcialmente nublado
+    "mdi-weather-cloudy", // 2 - Nublado
+    "mdi-weather-pouring", // 3 - Chuvoso
+    "mdi-weather-lightning", // 4 - Tempestade
+  ];
+  return icons[condicao] || "mdi-weather-cloudy";
+};
+
+const getClimaColor = (condicao: any) => {
+  const colors = [
+    "amber", // 0 - Ensolarado
+    "light-blue", // 1 - Parcialmente nublado
+    "grey", // 2 - Nublado
+    "blue", // 3 - Chuvoso
+    "deep-purple", // 4 - Tempestade
+  ];
+  return colors[condicao] || "grey";
+};
 </script>
 
 <template>
-  <!-- Seção de Relatórios -->
-  <v-card class="mb-4" elevation="2">
+  <v-card elevation="2">
     <v-card-title class="d-flex align-center">
       <v-icon icon="mdi-file-document-multiple" color="indigo-darken-2" class="mr-2"></v-icon>
       Relatórios Diários
+      <v-spacer />
+      <v-chip color="indigo" text-color="white" class="mr-2">
+        Total: {{ registroDiario.length }}
+      </v-chip>
     </v-card-title>
 
     <v-card-text>
       <v-expansion-panels>
         <v-expansion-panel v-for="(relatorio, index) in registroDiario" :key="index">
-          <v-expansion-panel-title>
+          <v-expansion-panel-title expand-icon="mdi-chevron-down">
             <div class="d-flex align-center">
               <v-icon icon="mdi-calendar" color="teal-darken-2" class="mr-2"></v-icon>
-              {{ relatorio.data }} - {{ relatorio.titulo }}
+              {{ formatarData(relatorio.data!) }} - {{ relatorio.titulo || "Sem título" }}
             </div>
           </v-expansion-panel-title>
-          <v-expansion-panel-text>
-            <div class="relatorio-detalhes">
-              <div class="mb-2">
-                <v-icon icon="mdi-account-group" color="blue-grey-darken-2" class="mr-1"></v-icon>
-                <strong>Equipe:</strong> {{ relatorio.resumo }} pessoas
-              </div>
-              <div class="mb-2">
-                <v-icon icon="mdi-weather-cloudy" color="light-blue-darken-2" class="mr-1"></v-icon>
-                <strong>Condições climáticas:</strong> {{ relatorio.condicoesClimaticas }}
-              </div>
-              <div class="mb-2">
-                <v-icon icon="mdi-text-box" color="amber-darken-2" class="mr-1"></v-icon>
-                <strong>Observações:</strong> {{ relatorio.ocorrencias }}
-              </div>
-              <!-- <btn text="visualizar" variant="outlined" @click="goToEditRegistro(relatorio.id)"></btn> -->
-              <btn text="Gerar PDF" variant="outlined" @click="gerarPDF(relatorio.id, relatorio.obraId)"></btn>
 
-              <!-- <v-chip-group v-if="relatorio.anexos > 0" class="mt-2">
-                <v-chip prepend-icon="mdi-paperclip" size="small" color="deep-purple-lighten-4">
-                  {{ relatorio.anexos }} anexo(s)
-                </v-chip>
-              </v-chip-group> -->
+          <v-expansion-panel-text>
+            <div class="relatorio-detalhes pa-4">
+              <v-row>
+                <v-col cols="12" md="6">
+                  <div class="mb-3">
+                    <v-icon
+                      icon="mdi-text-box-edit-outline"
+                      color="blue-grey"
+                      class="mr-2"
+                    ></v-icon>
+                    <strong>Resumo:</strong> {{ relatorio.resumo || "Nenhum resumo fornecido" }}
+                  </div>
+
+                  <div class="mb-3">
+                    <v-icon
+                      :icon="getClimaIcon(relatorio.condicoesClimaticas || 0)"
+                      :color="getClimaColor(relatorio.condicoesClimaticas || 0)"
+                      class="mr-2"
+                    ></v-icon>
+                    <strong>Clima:</strong>
+                    {{ [relatorio.condicoesClimaticas || 0] }}
+                  </div>
+                </v-col>
+
+                <v-col cols="12" md="6">
+                  <div class="mb-3">
+                    <v-icon icon="mdi-clock-outline" color="orange" class="mr-2"></v-icon>
+                    <strong>Horas trabalhadas:</strong> {{ relatorio.horasTrabalhadas || 0 }}h
+                  </div>
+
+                  <div class="mb-3">
+                    <v-icon icon="mdi-alert-box-outline" color="red" class="mr-2"></v-icon>
+                    <strong>Ocorrências:</strong> {{ relatorio.ocorrencias || "Nenhuma" }}
+                  </div>
+                </v-col>
+              </v-row>
+
+              <div class="d-flex justify-end mt-4" style="gap: 8px">
+                <btn text="Editar" variant="outlined" @click="goToEditRegistro(relatorio.id)"></btn>
+                <btn
+                  text="Gerar PDF"
+                  variant="tonal"
+                  color="primary"
+                  @click="gerarPDF(relatorio.id, relatorio.obraId)"
+                ></btn>
+              </div>
             </div>
           </v-expansion-panel-text>
         </v-expansion-panel>
       </v-expansion-panels>
 
-      <v-alert v-if="registroDiario.length === 0" type="info" class="mt-4">
+      <v-alert v-if="registroDiario.length === 0 && !loading" type="info" class="mt-4">
         Nenhum relatório cadastrado ainda.
       </v-alert>
+
+      <v-progress-circular
+        v-if="loading"
+        indeterminate
+        color="primary"
+        class="ma-4"
+      ></v-progress-circular>
     </v-card-text>
   </v-card>
 </template>
+
+<style scoped>
+.relatorio-detalhes {
+  background-color: rgba(0, 0, 0, 0.02);
+  border-radius: 4px;
+}
+
+.v-expansion-panel-title {
+  font-weight: 500;
+}
+
+.v-expansion-panel-text__wrapper {
+  padding: 0;
+}
+</style>

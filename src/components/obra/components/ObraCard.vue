@@ -79,7 +79,7 @@ const getStatusColor = (status: string) => {
   color: #555;
 }
 
-.text-subtitle{
+.text-subtitle {
   font-size: 12px;
   color: #a1a0a0;
 }

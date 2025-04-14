@@ -7,4 +7,5 @@ export interface IObraRepository {
   update(obra: Obra): Promise<void>;
   delete(id: number): Promise<void>;
   put(obra: Obra): Promise<void>;
+  getTotalRegistro(): Promise<number>;
 }

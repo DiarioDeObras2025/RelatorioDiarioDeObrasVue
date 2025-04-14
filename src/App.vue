@@ -26,7 +26,6 @@ const aplicarContainer = computed(() => !rotasSemContainer.includes(route.path.t
     <div v-if="aplicarContainer" class="mt-16">
       <Header></Header>
     </div>
-   
 
     <div :class="{ container: aplicarContainer && isDesktop }">
       <router-view />

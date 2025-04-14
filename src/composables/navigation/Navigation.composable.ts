@@ -47,11 +47,10 @@ export function useNavigation() {
     router.push({
       name: RouteName.EDIT_REGISTRO_DIARIO,
       params: {
-        id
+        id,
       },
     });
   };
-
 
   return {
     goToPath,
@@ -61,6 +60,6 @@ export function useNavigation() {
     goToCreateEmpreas,
     goToCreateUser,
     goToCreateRegistroDiario,
-    goToEditRegistroDiario
+    goToEditRegistroDiario,
   };
 }

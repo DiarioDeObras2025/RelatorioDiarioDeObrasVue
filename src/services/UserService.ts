@@ -9,9 +9,11 @@ export class UserService {
   async criarUsuario(user: User): Promise<{ success: boolean; message?: string; data?: any }> {
     const empresaStore = useEmpresaStore();
 
-    const registrationToken = empresaStore.empresaAtual?.registrationToken ?? (() => { 
-      throw new Error("Token de registro não disponível."); 
-    })();
+    const registrationToken =
+      empresaStore.empresaAtual?.registrationToken ??
+      (() => {
+        throw new Error("Token de registro não disponível.");
+      })();
 
     try {
       const response = await this.userRepository.createUser(user, registrationToken!);

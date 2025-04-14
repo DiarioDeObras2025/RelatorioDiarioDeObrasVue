@@ -2,19 +2,6 @@
   <v-container class="pa-4">
     <!-- Cabeçalho da Obra -->
     <v-card class="mb-6" elevation="2">
-      <v-img
-        height="200"
-        src="https://media.istockphoto.com/id/473919658/pt/foto/local-de-constru%C3%A7%C3%A3o.jpg?s=1024x1024&w=is&k=20&c=bqee-Mr3mPou8b-7LwDftQHoR03EpX_j73nyBJiioQM="
-        cover
-      >
-        <v-card-title
-          class="text-h4 white--text"
-          style="text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8)"
-        >
-          {{ obra.nome }}
-        </v-card-title>
-      </v-img>
-
       <v-card-text>
         <v-row>
           <v-col cols="12" md="6">
@@ -32,6 +19,9 @@
                 </template>
                 <v-list-item-title
                   >Término previsto: {{ formatDate(obra.dataTerminoPrevista) }}</v-list-item-title
+                >
+                <v-list-item-subtitle
+                  >({{ calcularDiasRestantes() }} dias restantes)</v-list-item-subtitle
                 >
               </v-list-item>
 
@@ -55,7 +45,7 @@
 
               <v-list-item>
                 <template v-slot:prepend>
-                  <v-icon icon="mdi-office-building" color="purple-darken-2"></v-icon>
+                  <v-icon icon="mdi-account" color="purple-darken-2"></v-icon>
                 </template>
                 <v-list-item-title>Cliente: {{ obra.cliente }}</v-list-item-title>
               </v-list-item>
@@ -64,9 +54,9 @@
                 <template v-slot:prepend>
                   <v-icon :icon="statusIcon" :color="statusColor"></v-icon>
                 </template>
-                <v-list-item-title
-                  >Status:
-                  <v-chip :color="statusColor" size="small" class="ml-2">
+                <v-list-item-title>
+                  Status:
+                  <v-chip :color="statusColor" size="small" class="ml-2" label>
                     {{ obra.status }}
                   </v-chip>
                 </v-list-item-title>
@@ -74,38 +64,36 @@
             </v-list>
           </v-col>
         </v-row>
-      </v-card-text>
 
-      <v-card-actions class="px-4 pb-4">
-        <v-btn color="primary" prepend-icon="mdi-pencil" @click="goToEditCreate">
-          Editar Obra
-        </v-btn>
-        <v-spacer></v-spacer>
-        <v-btn color="secondary" prepend-icon="mdi-plus" @click="novoRelatorio">
-          Novo Relatório
-        </v-btn>
-      </v-card-actions>
+        <!-- Barra de Progresso -->
+        <v-progress-linear
+          v-if="obra.dataInicio && obra.dataTerminoPrevista"
+          :model-value="calcularProgresso()"
+          height="20"
+          rounded
+          color="light-green"
+          class="mt-4"
+        >
+          <strong>{{ calcularProgresso() }}%</strong>
+        </v-progress-linear>
+      </v-card-text>
     </v-card>
 
+    <!-- Botão Novo Relatório -->
     <div class="btn-wrapper">
-  <v-btn 
-    color="primary"
-    prepend-icon="mdi-plus"
-    @click="novoRelatorio"
-    class="nova-obra-btn"
-  >
-    Novo relatório
-  </v-btn>
-</div>
+      <v-btn color="primary" prepend-icon="mdi-plus" @click="novoRelatorio" class="mb-4" block>
+        Novo Relatório
+      </v-btn>
+    </div>
 
-    <list-relatorio class="mt-4" />
+    <!-- Lista de Relatórios -->
+    <list-relatorio />
   </v-container>
 </template>
 
 <script lang="ts" setup>
 import type { Obra } from "@/domain/entities/obra/Obra";
 import { computed } from "vue";
-import { useRouter } from "vue-router";
 import ListRelatorio from "./ListRelatorio.vue";
 import { useNavigation } from "@/composables/navigation/Navigation.composable";
 
@@ -113,7 +101,6 @@ const props = defineProps<{
   obra: Obra;
 }>();
 
-const router = useRouter();
 const { goToCreateRegistroDiario } = useNavigation();
 
 const statusIcon = computed(() => {
@@ -142,30 +129,46 @@ function formatDate(date: Date): string {
   return date.toLocaleDateString("pt-BR");
 }
 
-function goToEditCreate() {
-  router.push({ name: "obra-editar", params: { id: props.obra.id } });
+function calcularProgresso(): number {
+  if (!props.obra.dataInicio || !props.obra.dataTerminoPrevista) return 0;
+
+  const inicio = new Date(props.obra.dataInicio);
+  const termino = new Date(props.obra.dataTerminoPrevista);
+  const hoje = new Date();
+
+  const total = termino.getTime() - inicio.getTime();
+  const decorrido = hoje.getTime() - inicio.getTime();
+
+  return Math.min(Math.round((decorrido / total) * 100), 100);
+}
+
+function calcularDiasRestantes(): number {
+  if (!props.obra.dataTerminoPrevista) return 0;
+
+  const termino = new Date(props.obra.dataTerminoPrevista);
+  const hoje = new Date();
+  hoje.setHours(0, 0, 0, 0);
+  termino.setHours(0, 0, 0, 0);
+
+  const diffTime = termino.getTime() - hoje.getTime();
+  return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 }
 
 function novoRelatorio() {
   goToCreateRegistroDiario(props.obra.id);
 }
-
 </script>
 
 <style scoped>
-.relatorio-detalhes {
-  padding: 8px;
-  background-color: #f5f5f5;
-  border-radius: 4px;
-}
-
-.v-expansion-panel-title {
-  font-weight: 500;
-}
-
 .btn-wrapper {
-  display: flex;
-  justify-content: flex-end;
+  margin-bottom: 16px;
+}
+
+.v-progress-linear {
   margin-top: 16px;
+}
+
+.v-list-item {
+  padding-left: 0;
 }
 </style>

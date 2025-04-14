@@ -31,21 +31,15 @@ onMounted(async () => {
 <template>
   <div class="obra-page">
     <div class="header">
-  <div class="header-left">
-    <h1>📋 Suas Obras</h1>
-    <p class="subtitle">Acompanhe e gerencie todas as suas construções em andamento.</p>
-  </div>
+      <div class="header-left">
+        <h1>📋 Suas Obras</h1>
+        <p class="subtitle">Acompanhe e gerencie todas as suas construções em andamento.</p>
+      </div>
 
-  <v-btn 
-    color="primary"
-    prepend-icon="mdi-plus"
-    @click="goToCreateObra"
-    class="nova-obra-btn"
-  >
-    Nova Obra
-  </v-btn>
-</div>
-
+      <v-btn color="primary" prepend-icon="mdi-plus" @click="goToCreateObra" class="nova-obra-btn">
+        Nova Obra
+      </v-btn>
+    </div>
 
     <div class="content">
       <!-- Loading state -->
@@ -65,9 +59,9 @@ onMounted(async () => {
           class="card-real"
           @click="goToObraDetalhePage(obra.id)"
         />
-        
+
         <!-- Placeholders "Adicionar nova obra" -->
-        <div 
+        <div
           v-for="i in Math.max(0, 3 - obras.length)"
           :key="`add-${i}`"
           class="card-placeholder"
@@ -117,11 +111,11 @@ onMounted(async () => {
   max-width: 1200px;
   margin: 0 auto;
   padding: 24px;
-  
+
   h1 {
     font-size: 1.8rem;
     font-weight: 600;
-    color: var(primay)
+    color: var(primay);
   }
 }
 
@@ -129,16 +123,20 @@ onMounted(async () => {
   min-height: 60vh;
 }
 
-.obra-grid, .loading-grid {
+.obra-grid,
+.loading-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
   gap: 60px;
 }
-.card-real, .card-placeholder {
+.card-real,
+.card-placeholder {
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
   cursor: pointer;
   &:hover {
     transform: translateY(-2px);
@@ -154,7 +152,7 @@ onMounted(async () => {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  
+
   .placeholder-content {
     width: 100%;
     height: 100%;
@@ -162,13 +160,13 @@ onMounted(async () => {
     background-size: 200% 100%;
     animation: loading 1.5s infinite;
   }
-  
+
   .add-content {
     display: flex;
     flex-direction: column;
     align-items: center;
     padding: 24px;
-    
+
     p {
       margin-top: 12px;
       color: #616161;
@@ -178,12 +176,17 @@ onMounted(async () => {
 }
 
 @keyframes loading {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
 }
 
 @media (min-width: 1024px) {
-  .obra-grid, .loading-grid {
+  .obra-grid,
+  .loading-grid {
     grid-template-columns: repeat(3, 1fr); // Fixa 3 colunas no desktop
   }
 }
@@ -191,13 +194,14 @@ onMounted(async () => {
 @media (max-width: 768px) {
   .obra-page {
     padding: 16px;
-    
+
     h1 {
       font-size: 1.5rem;
     }
   }
-  
-  .obra-grid, .loading-grid {
+
+  .obra-grid,
+  .loading-grid {
     grid-template-columns: 1fr;
   }
 }

@@ -1,4 +1,7 @@
-import type { Material, MembroEquipe } from "@/components/create-registro-diario/CreateRegistroDiario.vue";
+import type {
+  Material,
+  MembroEquipe,
+} from "@/components/create-registro-diario/CreateRegistroDiario.vue";
 
 export enum CondicaoClimaticaEnum {
   ENSOLARADO = "Ensolarado",
@@ -47,25 +50,25 @@ export class RegistroDiario {
   // Método factory para criar um registro vazio
   static createEmpty(): RegistroDiario {
     return new RegistroDiario(
-      0,          // id
-      null,       // data
-      0,          // obraId
-      "",         // resumo
+      0, // id
+      null, // data
+      0, // obraId
+      "", // resumo
       CondicaoClimaticaEnum.ENSOLARADO, // condicoesClimaticas
-      [],         // equipe (agora é MembroEquipe[])
-      8,          // horasTrabalhadas
-      "",         // equipamentos
-      0,          // consumoCimento
-      [],         // materiais (agora é Material[])
+      [], // equipe (agora é MembroEquipe[])
+      8, // horasTrabalhadas
+      "", // equipamentos
+      0, // consumoCimento
+      [], // materiais (agora é Material[])
       EtapaObraEnum.ESTRUTURA, // etapa
-      0,          // percentualConcluido
-      0,          // areaExecutada
-      "",         // ocorrencias
-      "",         // temperatura
-      null,       // precipitacao
-      "",         // assinaturaResponsavel
-      null,       // dataAssinatura
-      ""          // titulo
+      0, // percentualConcluido
+      0, // areaExecutada
+      "", // ocorrencias
+      "", // temperatura
+      null, // precipitacao
+      "", // assinaturaResponsavel
+      null, // dataAssinatura
+      "", // titulo
     );
   }
 
@@ -90,7 +93,7 @@ export class RegistroDiario {
       partial.precipitacao ?? null,
       partial.assinaturaResponsavel ?? "",
       partial.dataAssinatura ? new Date(partial.dataAssinatura) : null,
-      partial.titulo ?? ""
+      partial.titulo ?? "",
     );
   }
 }
