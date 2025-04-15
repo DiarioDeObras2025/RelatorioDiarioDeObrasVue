@@ -43,6 +43,10 @@ export function useNavigation() {
     });
   };
 
+  const goToLogin = () => {
+    router.push(RoutePath.LOGIN);
+  };
+
   const goToEditRegistroDiario = (id: number) => {
     router.push({
       name: RouteName.EDIT_REGISTRO_DIARIO,
@@ -61,5 +65,6 @@ export function useNavigation() {
     goToCreateUser,
     goToCreateRegistroDiario,
     goToEditRegistroDiario,
+    goToLogin
   };
 }

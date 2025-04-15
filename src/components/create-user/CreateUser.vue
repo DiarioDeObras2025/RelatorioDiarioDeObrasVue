@@ -87,7 +87,7 @@ const telefoneValido = (v: string) => {
   return /^\d{10,11}$/.test(somenteNumeros) || "Telefone inválido";
 };
 
-const { goToListObra } = useNavigation();
+const { goToLogin } = useNavigation();
 
 async function CreateUser() {
   isLoading.value = true;
@@ -101,10 +101,9 @@ async function CreateUser() {
   );
   const result = await service.criarUsuario(user);
   if (result.success) {
-    showToast("Cadastro realizado com sucesso!", "primary");
     showToast("Aguarde que vamos te levar para login", "primary");
     setTimeout(() => {
-      goToListObra();
+      goToLogin();
     }, 2000);
   } else {
     showToast(result.message!, "red");
