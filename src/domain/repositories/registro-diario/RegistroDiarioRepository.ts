@@ -3,7 +3,7 @@ import type { RegistroDiario } from "@/domain/entities/registro-diario/RegistroD
 import type { IRegistroDiarioRepository } from "@/domain/interface/registro-diario/IRegistroDiarioRepository";
 import { handleApiResponse } from "@/utils/api";
 
-const apiUrl = "https://localhost:7159/RegistroDiario";
+const apiUrl = `${import.meta.env.VITE_API_URL}/RegistroDiario`;
 
 export class RegistroDiarioRepository implements IRegistroDiarioRepository {
   async getAll(): Promise<RegistroDiario[]> {
@@ -11,24 +11,24 @@ export class RegistroDiarioRepository implements IRegistroDiarioRepository {
   }
 
   async getById(idRegistro: number): Promise<RegistroDiario> {
-    const data = await handleApiResponse<RegistroDiario>(api.get(`${apiUrl}/${idRegistro}`));
-
+    const data = await handleApiResponse<RegistroDiario>(
+      api.get(`${apiUrl}/${idRegistro}`)
+    );
     return data;
   }
 
   async getRelatorioFromObraid(idObra: number): Promise<RegistroDiario[]> {
     return await handleApiResponse<RegistroDiario[]>(
-      api.get(`${apiUrl}/get-relatorio-from-obra/${idObra}`),
+      api.get(`${apiUrl}/get-relatorio-from-obra/${idObra}`)
     );
   }
 
   async gerarPdf(idRegistro: number, idObra: number): Promise<void> {
     try {
       const response = await api.get(`${apiUrl}/relatorios/${idObra}/${idRegistro}/pdf`, {
-        responseType: "blob", // Isso é importante para receber arquivos binários
+        responseType: "blob",
       });
 
-      // Criar um link temporário para download
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement("a");
       link.href = url;
@@ -36,7 +36,6 @@ export class RegistroDiarioRepository implements IRegistroDiarioRepository {
       document.body.appendChild(link);
       link.click();
 
-      // Limpeza
       link.parentNode?.removeChild(link);
       window.URL.revokeObjectURL(url);
     } catch (error) {

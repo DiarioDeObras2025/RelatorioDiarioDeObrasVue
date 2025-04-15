@@ -4,11 +4,10 @@ import { HttpStatusCodeEnum } from "@/domain/enums/HttpStatusCode.enum";
 import type { ILoginRepository } from "@/domain/interface/login/ILoginRepository";
 import { handleApiResponse } from "@/utils/api";
 
-const apiUrl = "https://localhost:7159/auth/login";
+const apiUrl = `${import.meta.env.VITE_API_URL}/auth/login`;
 
 export class LoginRepository implements ILoginRepository {
   async logar(login: Login): Promise<any> {
-    // return api.post(apiUrl, login);
     return await handleApiResponse(api.post(apiUrl, login));
   }
 }
