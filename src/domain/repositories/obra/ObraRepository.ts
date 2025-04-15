@@ -3,12 +3,14 @@ import type { IObraRepository } from "@/domain/interface/obra/IObraRepository";
 import api from "@/config/axios";
 import { handleApiResponse } from "@/utils/api";
 
-const apiUrl = "https://localhost:7159/Obra";
+const baseUrl = import.meta.env.VITE_API_URL;
+const apiUrl = `${baseUrl}/Obra`;
 
 export class ObraRepository implements IObraRepository {
   getTotalRegistro(): Promise<number> {
-    return handleApiResponse<number>(api.get(`registroDiario/total`));
+    return handleApiResponse<number>(api.get(`${baseUrl}/registroDiario/total`));
   }
+
   async getAll(): Promise<Obra[]> {
     return await handleApiResponse<Obra[]>(api.get(apiUrl));
   }
