@@ -24,7 +24,7 @@ export class UserRepository implements IUserRepository {
             Authorization: `Bearer ${registrationToken}`,
             "Content-Type": "application/json",
           },
-        }
+        },
       );
 
       return {

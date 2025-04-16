@@ -177,7 +177,7 @@ const formatarData = (dataString: string | Date): string => {
     <header class="dashboard-header">
       <div class="header-content">
         <h1 class="title">
-          <v-icon icon="mdi-home-construction" size="32" class="mr-2" />
+          <v-icon icon="mdi-account-hard-hat-outline" size="32" class="mr-2" />
           Diário de Obras
         </h1>
         <p class="subtitle">Visão completa do andamento de suas construções</p>

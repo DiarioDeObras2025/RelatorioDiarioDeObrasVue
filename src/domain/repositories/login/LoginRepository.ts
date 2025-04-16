@@ -1,6 +1,5 @@
 import api from "@/config/axios";
 import type { Login } from "@/domain/entities/login/Login";
-import { HttpStatusCodeEnum } from "@/domain/enums/HttpStatusCode.enum";
 import type { ILoginRepository } from "@/domain/interface/login/ILoginRepository";
 import { handleApiResponse } from "@/utils/api";
 

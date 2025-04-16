@@ -8,4 +8,5 @@ export default class RoutePath {
   static readonly CREATE_EMPRESA: string = `/create-empresa`;
   static readonly CREATE_REGISTRO_DIARIO: string = `/create-registro-diario/obra/:id`;
   static readonly EDIT_REGISTRO_DIARIO: string = `/edit-registro-diario/:id`;
+  static readonly LIST_RELATORIO_GERAL: string = `/list-relatorio-geral`;
 }

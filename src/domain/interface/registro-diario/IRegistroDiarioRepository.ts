@@ -1,3 +1,4 @@
+import type { ListRelatorioGeral } from "@/domain/entities/registro-diario/ListRelatorioGeral";
 import type { RegistroDiario } from "@/domain/entities/registro-diario/RegistroDiario";
 
 export interface IRegistroDiarioRepository {
@@ -8,4 +9,5 @@ export interface IRegistroDiarioRepository {
   put(obra: RegistroDiario): Promise<void>;
   getRelatorioFromObraid(idObra: number): Promise<RegistroDiario[]>;
   gerarPdf(idRegistro: number, idObra: number): void;
+  getRelatorioGeral(): Promise<ListRelatorioGeral[]>;
 }

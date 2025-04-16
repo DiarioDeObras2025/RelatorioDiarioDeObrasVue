@@ -11,6 +11,7 @@ import { isAuthenticated } from "./auth_guard";
 import CreateEmpresaVue from "@/components/create-empresa/CreateEmpresa.vue";
 import CreateRegistroDiarioVue from "@/components/create-registro-diario/CreateRegistroDiario.vue";
 import EditRegistroDiarioVue from "@/components/edit-registro-diario/EditRegistroDiario.vue";
+import ListRelatorioGeralVue from "@/components/list-relatorio/ListRelatorioGeral.vue";
 
 const routes = [
   // ✅ Redirecionamento simples sem component
@@ -60,6 +61,11 @@ const routes = [
     name: RouteName.EDIT_REGISTRO_DIARIO,
     component: EditRegistroDiarioVue,
     props: true,
+  },
+  {
+    path: RoutePath.LIST_RELATORIO_GERAL,
+    name: RouteName.LIST_RELATORIO_GERAL,
+    component: ListRelatorioGeralVue,
   },
 
   {

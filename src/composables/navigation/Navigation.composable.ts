@@ -65,6 +65,6 @@ export function useNavigation() {
     goToCreateUser,
     goToCreateRegistroDiario,
     goToEditRegistroDiario,
-    goToLogin
+    goToLogin,
   };
 }

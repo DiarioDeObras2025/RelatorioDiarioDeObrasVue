@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref, watch } from "vue";
-import { useRoute, useRouter } from "vue-router";
+import { useRouter } from "vue-router";
 import {
   RegistroDiario,
   CondicaoClimaticaEnum,
@@ -11,12 +11,10 @@ import { useToast } from "@/composables/toast/Toast.composable";
 
 const props = defineProps<{ registro?: RegistroDiario }>();
 const router = useRouter();
-const route = useRoute();
 const { showToast } = useToast();
 
 const registroRepo = new RegistroDiarioRepository();
 const loading = ref(false);
-const obraId = Number(route.params.id);
 
 const registro = ref<RegistroDiario>(
   props.registro ? RegistroDiario.fromPartial(props.registro) : RegistroDiario.createEmpty(),
@@ -117,7 +115,7 @@ const salvarRegistro = async () => {
   try {
     const payload = {
       ...registro.value,
-      obraId,
+      obraId: registro.value.obraId,
       data: registro.value.data!,
     };
 
