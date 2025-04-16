@@ -12,6 +12,7 @@ import CreateEmpresaVue from "@/components/create-empresa/CreateEmpresa.vue";
 import CreateRegistroDiarioVue from "@/components/create-registro-diario/CreateRegistroDiario.vue";
 import EditRegistroDiarioVue from "@/components/edit-registro-diario/EditRegistroDiario.vue";
 import ListRelatorioGeralVue from "@/components/list-relatorio/ListRelatorioGeral.vue";
+import ShowAllObrasVue from "@/components/showAllObras/ShowAllObras.vue";
 
 const routes = [
   // ✅ Redirecionamento simples sem component
@@ -66,6 +67,11 @@ const routes = [
     path: RoutePath.LIST_RELATORIO_GERAL,
     name: RouteName.LIST_RELATORIO_GERAL,
     component: ListRelatorioGeralVue,
+  },
+  {
+    path: RoutePath.TODAS_OBRAS,
+    name: RouteName.TODAS_OBRAS,
+    component: ShowAllObrasVue,
   },
 
   {

@@ -1,7 +1,13 @@
 <template>
-  <v-container class="pa-4">
+  <v-container class="pa-4" style="max-width: 1440px">
     <!-- Cabeçalho da Obra -->
     <v-card class="mb-6" elevation="2">
+      <v-card-title class="d-flex justify-center align-center py-4">
+        <v-icon color="primary" size="x-large" class="mr-2">mdi-home-city</v-icon>
+        <span class="text-h3 font-weight-bold title">{{ obra.nome }}</span>
+      </v-card-title>
+
+      <v-divider class="mx-4 mb-4"></v-divider>
       <v-card-text>
         <v-row>
           <v-col cols="12" md="6">
@@ -13,12 +19,17 @@
                 <v-list-item-title>Início: {{ formatDate(obra.dataInicio) }}</v-list-item-title>
               </v-list-item>
 
-              <v-list-item v-if="obra.dataTerminoPrevista">
+              <v-list-item>
                 <template v-slot:prepend>
                   <v-icon icon="mdi-calendar-end" color="red-darken-2"></v-icon>
                 </template>
                 <v-list-item-title
-                  >Término previsto: {{ formatDate(obra.dataTerminoPrevista) }}</v-list-item-title
+                  >Término previsto:
+                  {{
+                    obra.dataTerminoPrevista
+                      ? formatDate(obra.dataTerminoPrevista)
+                      : "Data não informada"
+                  }}</v-list-item-title
                 >
                 <v-list-item-subtitle
                   >({{ calcularDiasRestantes() }} dias restantes)</v-list-item-subtitle
@@ -170,5 +181,9 @@ function novoRelatorio() {
 
 .v-list-item {
   padding-left: 0;
+}
+
+.title {
+  color: var(--primary);
 }
 </style>

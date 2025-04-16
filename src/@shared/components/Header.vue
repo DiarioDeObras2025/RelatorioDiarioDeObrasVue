@@ -4,7 +4,7 @@
     <v-app-bar-nav-icon @click="drawer = !drawer" class="d-flex d-md-none"></v-app-bar-nav-icon>
 
     <!-- Logo e Nome do Sistema -->
-    <v-toolbar-title class="d-flex align-center">
+    <v-toolbar-title class="d-flex align-center" @click="goToListObra" style="cursor: pointer">
       <v-img
         src="@/assets/image/LogoRelatorioSemfundoBranco.png"
         max-height="40"
@@ -24,12 +24,12 @@
         Início
       </v-btn>
 
-      <v-btn text to="/obras">
+      <v-btn text @click="goToShowAllObras">
         <v-icon left>mdi-hard-hat</v-icon>
         Obras
       </v-btn>
 
-      <v-btn text to="/relatorios">
+      <v-btn text @click="showGeralRelatorio">
         <v-icon left>mdi-chart-bar</v-icon>
         Relatórios
       </v-btn>
@@ -96,7 +96,7 @@
           <v-list-item-title>Obras</v-list-item-title>
         </v-list-item>
 
-        <v-list-item to="/relatorios">
+        <v-list-item @click="showGeralRelatorio">
           <v-list-item-icon>
             <v-icon>mdi-chart-bar</v-icon>
           </v-list-item-icon>
@@ -116,14 +116,17 @@
 
 <script lang="ts" setup>
 import { ref, computed } from "vue";
-//   import { useStore } from 'vuex';
+import { useNavigation } from "@/composables/navigation/Navigation.composable";
 
 const drawer = ref(false);
-//   const router = useRouter();
+const { goToListGeralRelatorio, goToShowAllObras, goToListObra } = useNavigation();
 
 const userName = computed(() => "Usuário");
 const userEmail = computed(() => "email@exemplo.com");
 
+function showGeralRelatorio() {
+  goToListGeralRelatorio();
+}
 const userInitials = computed(() => {
   return userName.value
     .split(" ")

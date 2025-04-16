@@ -88,7 +88,7 @@ function formatDate(date: Date | null) {
 </script>
 
 <template>
-  <v-container class="pa-4" style="max-width: 800px">
+  <v-container class="pa-4" style="max-width: 1440px">
     <!-- Barra de Status -->
     <v-card class="mb-6" elevation="1">
       <v-card-text class="d-flex justify-space-between align-center py-3">

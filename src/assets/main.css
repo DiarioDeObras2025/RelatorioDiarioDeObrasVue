@@ -20,6 +20,12 @@ body {
     8px 0 10px -4px rgba(0, 0, 0, 0.1);
 } */
 
+/* .container{
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 24px;
+} */
+
 .text-ellipsis {
   display: block;
   white-space: nowrap;

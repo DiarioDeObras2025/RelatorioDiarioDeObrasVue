@@ -6,7 +6,7 @@ let isRefreshing = false;
 let refreshSubscribers: (() => void)[] = [];
 
 const api = axios.create({
-  baseURL: "https://localhost:7159",
+  baseURL: `${import.meta.env.VITE_API_URL}`,
 });
 
 // Adiciona token em cada requisição

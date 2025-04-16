@@ -56,6 +56,13 @@ export function useNavigation() {
     });
   };
 
+  const goToListGeralRelatorio = () => {
+    router.push(RoutePath.LIST_RELATORIO_GERAL);
+  };
+
+  const goToShowAllObras = () => {
+    router.push(RoutePath.TODAS_OBRAS);
+  };
   return {
     goToPath,
     goToObraDetalhePage,
@@ -66,5 +73,7 @@ export function useNavigation() {
     goToCreateRegistroDiario,
     goToEditRegistroDiario,
     goToLogin,
+    goToListGeralRelatorio,
+    goToShowAllObras,
   };
 }

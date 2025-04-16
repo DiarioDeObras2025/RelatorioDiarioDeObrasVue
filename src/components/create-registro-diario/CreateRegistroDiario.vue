@@ -8,13 +8,16 @@ import {
 } from "@/domain/entities/registro-diario/RegistroDiario";
 import { RegistroDiarioRepository } from "@/domain/repositories/registro-diario/RegistroDiarioRepository";
 import { useToast } from "@/composables/toast/Toast.composable";
+import { useRoute } from "vue-router";
 
 const props = defineProps<{ registro?: RegistroDiario }>();
 const router = useRouter();
 const { showToast } = useToast();
+const route = useRoute();
 
 const registroRepo = new RegistroDiarioRepository();
 const loading = ref(false);
+const obraId = Number(route.params.id);
 
 const registro = ref<RegistroDiario>(
   props.registro ? RegistroDiario.fromPartial(props.registro) : RegistroDiario.createEmpty(),
@@ -115,7 +118,7 @@ const salvarRegistro = async () => {
   try {
     const payload = {
       ...registro.value,
-      obraId: registro.value.obraId,
+      obraId: registro.value.obraId || obraId,
       data: registro.value.data!,
     };
 

@@ -147,7 +147,13 @@ const getClimaColor = (condicao: any) => {
         </v-expansion-panel>
       </v-expansion-panels>
 
-      <v-alert v-if="registroDiario.length === 0 && !loading" type="info" class="mt-4">
+      <v-alert
+        v-if="registroDiario.length === 0 && !loading"
+        type="info"
+        color="primary"
+        class="mt-4"
+        variant="outlined"
+      >
         Nenhum relatório cadastrado ainda.
       </v-alert>
 

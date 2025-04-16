@@ -75,7 +75,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <v-container class="pa-4" style="max-width: 1200px">
+  <v-container class="pa-4" style="max-width: 1400px">
     <!-- Cabeçalho -->
     <v-card-title class="text-h5 font-weight-bold d-flex align-center mb-4">
       <v-icon icon="mdi-file-document-multiple" color="primary" class="mr-2" size="28" />

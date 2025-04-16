@@ -20,7 +20,6 @@ onMounted(async () => {
 
 <template>
   <obra-detalhe v-if="obra" :obra="obra" />
-  <!-- <btn text="Novo relatório" prepend-inner-icon="mdi-plus" @click="goToNovoRelatorio"></btn> -->
 </template>
 
 <style lang="scss" scoped>

@@ -22,6 +22,11 @@ export async function handleApiResponse<T>(promise: Promise<any>): Promise<T> {
           throw new Error(data.title || "Credenciais inválidas. Verifique seu e-mail e senha.");
         }
 
+        if (data.errors) {
+          const mensagens = Object.values(data.errors).flat(); // Extrai todos os erros em um array
+          throw new Error(mensagens.join("\n")); // Junta tudo com quebras de linha
+        }
+
         // Tratamento para erros com mensagens no corpo
         if (data.title || data.message) {
           throw new Error(data.title || data.message);

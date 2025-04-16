@@ -4,7 +4,7 @@ import { ObraRepository } from "@/domain/repositories/obra/ObraRepository";
 import type { Obra } from "@/domain/entities/obra/Obra";
 import { useNavigation } from "@/composables/navigation/Navigation.composable";
 
-const { goToObraDetalhePage, goToCreateObra } = useNavigation();
+const { goToObraDetalhePage, goToCreateObra, goToShowAllObras } = useNavigation();
 const obraRepo = new ObraRepository();
 const obras = ref<Obra[]>([]);
 const error = ref<string | null>(null);
@@ -282,7 +282,7 @@ const formatarData = (dataString: string | Date): string => {
             <v-icon icon="mdi-home-group" class="mr-2" />
             Obras Recentes
           </h2>
-          <v-btn variant="text" color="primary" @click="goToCreateObra" class="see-all-btn">
+          <v-btn variant="text" color="primary" @click="goToShowAllObras" class="see-all-btn">
             Ver todas
           </v-btn>
         </div>
