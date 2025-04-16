@@ -6,6 +6,16 @@
       </div>
       <h2 class="titulo">Diário de Obras</h2>
       <text-field variant="underlined" label="Nome da sua empresa" required v-model="nomeEmpresa" />
+      <text-field variant="underlined" label="Responsável pela empresa" required v-model="responsavel" />
+      <text-field
+        variant="underlined"
+        label="Telefone"
+        v-model="telefone"
+        required
+        :rules="[telefoneValido]"
+        :mask="{ mask: ['(##) ####-####', '(##) #####-####'], eager: true }"
+        placeholder="(11) 91111-1111"
+      />
       <btn
         class="mt-3"
         text="Proximo"
@@ -27,27 +37,40 @@ import { useToast } from "@/composables/toast/Toast.composable";
 import { useNavigation } from "@/composables/navigation/Navigation.composable";
 import { Empresa } from "@/domain/entities/empresa/Empresa";
 import { useEmpresaStore } from "@/stores/Empresa"; // Importe o store
+import { EmpresaRepository } from "@/domain/repositories/empresa/EmpresaRepository";
 
 const { showToast } = useToast();
 const empresaStore = useEmpresaStore(); // Use o store
 
 const nomeEmpresa = ref("");
+const telefone = ref("");
+const responsavel = ref("");
 const isLoading = ref(false);
 const service = new EmpresaService();
 
 const { goToCreateUser } = useNavigation();
 
+const telefoneValido = (v: string) => {
+  const somenteNumeros = v.replace(/\D/g, "");
+  return /^\d{10,11}$/.test(somenteNumeros) || "Telefone inválido";
+};
+
 async function logar() {
   isLoading.value = true;
-  const empresa = new Empresa(0, nomeEmpresa.value);
-  const result = await service.createEmpresa(empresa);
-
-  if (result.success) {
-    // Armazena a empresa no store antes de navegar
-    empresaStore.setEmpresaAtual(result.data); // Assumindo que result.data contém a empresa criada
-    goToCreateUser();
-  } else {
-    showToast(result.message!, "red");
+  try{
+    const empresa = new Empresa(0, nomeEmpresa.value, telefone.value, responsavel.value);
+    const result = await service.createEmpresa(empresa);
+    if(result.success){
+      empresaStore.setEmpresaAtual(result.data);
+      goToCreateUser();
+    }else{
+      showToast(result.message!, "red");
+    }
+    
+  } catch (error) {
+    showToast(error instanceof Error ? error.message : "Erro desconhecido", "red");
+  } finally {
+    isLoading.value = false;
   }
   isLoading.value = false;
 }

@@ -29,7 +29,7 @@
         text="Criar novo Usuário"
         @click="goToCreateEmpresa"
         :tela-inteira="true"
-        variant="plain"
+        variant="outlined"
       />
     </div>
   </div>

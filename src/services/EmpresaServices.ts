@@ -11,12 +11,17 @@ export class EmpresaService {
     try {
       const response = await this.empresaRepository.createEmpresa(empresa);
 
-      if (response.status === HttpStatusCodeEnum.Ok) {
-        return { success: true, data: response.data };
+      if (response.empresa) {
+        return { success: true, data: response };
       }
 
       return { success: false, message: `Erro inesperado: código ${response.status}` };
     } catch (error: any) {
+
+      if(error.message){
+        return { success: false, message: error.message || "Usuário ou senha inválidos" };
+      }
+
       const status = error?.response?.status;
 
       if (status === HttpStatusCodeEnum.Unauthorized) {

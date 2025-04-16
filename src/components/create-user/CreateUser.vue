@@ -4,7 +4,7 @@
       <div class="logo-wrapper">
         <img src="@/assets/image/LogoRelatorioSemfundo.png" alt="Logo" class="logo" />
       </div>
-      <h2 class="titulo">Criar Conta</h2>
+      <h2 class="titulo">Criar Usuáro</h2>
 
       <text-field label="Nome" v-model="userName" required />
       <text-field label="E-mail" v-model="email" type="email" :rules="[emailValido]" required />

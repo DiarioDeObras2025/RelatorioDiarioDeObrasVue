@@ -1,3 +1,4 @@
+const apiUrl = `${import.meta.env.VITE_API_URL}`;
 export class AuthService {
   private static TOKEN_KEY = "token";
   private static REFRESH_TOKEN_KEY = "refreshToken";
@@ -54,7 +55,7 @@ export class AuthService {
       throw new Error("Tokens ausentes");
     }
 
-    const response = await fetch("https://localhost:7159/Auth/refresh-token", {
+    const response = await fetch(`${apiUrl}/Auth/refresh-token`, { 
       method: "POST",
       headers: {
         "Content-Type": "application/json",

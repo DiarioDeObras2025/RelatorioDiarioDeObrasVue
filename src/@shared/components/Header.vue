@@ -57,18 +57,18 @@
             </v-avatar>
           </v-list-item-avatar>
           <v-list-item-content>
-            <v-list-item-title>Eng. {{ userName }}</v-list-item-title>
+            <v-list-item-title>{{ userName }}</v-list-item-title>
             <v-list-item-subtitle>{{ userEmail }}</v-list-item-subtitle>
           </v-list-item-content>
         </v-list-item>
         <v-divider></v-divider>
-        <v-list-item to="/perfil">
+        <v-list-item to="/perfil" disabled>
           <v-list-item-icon>
             <v-icon>mdi-account</v-icon>
           </v-list-item-icon>
           <v-list-item-title>Meu Perfil</v-list-item-title>
         </v-list-item>
-        <v-list-item @click="logout">
+        <v-list-item @click="logout" disabled>
           <v-list-item-icon>
             <v-icon>mdi-logout</v-icon>
           </v-list-item-icon>
@@ -117,12 +117,15 @@
 <script lang="ts" setup>
 import { ref, computed } from "vue";
 import { useNavigation } from "@/composables/navigation/Navigation.composable";
+import { useUserStore } from "@/stores/User";
+
+const userStore = useUserStore();
 
 const drawer = ref(false);
 const { goToListGeralRelatorio, goToShowAllObras, goToListObra } = useNavigation();
 
-const userName = computed(() => "Usuário");
-const userEmail = computed(() => "email@exemplo.com");
+const userName = computed(() => userStore.nomeUser || "Usuário");
+const userEmail = computed(() => userStore.email);
 
 function showGeralRelatorio() {
   goToListGeralRelatorio();
