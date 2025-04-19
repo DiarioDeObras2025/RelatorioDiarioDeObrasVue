@@ -17,8 +17,7 @@ export class EmpresaService {
 
       return { success: false, message: `Erro inesperado: código ${response.status}` };
     } catch (error: any) {
-
-      if(error.message){
+      if (error.message) {
         return { success: false, message: error.message || "Usuário ou senha inválidos" };
       }
 

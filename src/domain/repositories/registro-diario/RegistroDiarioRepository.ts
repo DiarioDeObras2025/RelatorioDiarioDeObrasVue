@@ -5,6 +5,7 @@ import type { IRegistroDiarioRepository } from "@/domain/interface/registro-diar
 import { handleApiResponse } from "@/utils/api";
 
 const apiUrl = `${import.meta.env.VITE_API_URL}/RegistroDiario`;
+const apiUrlFotoRegistro = `${import.meta.env.VITE_API_URL}/FotoRegistro`;
 
 export class RegistroDiarioRepository implements IRegistroDiarioRepository {
   getRelatorioGeral(): Promise<ListRelatorioGeral[]> {
@@ -22,6 +23,12 @@ export class RegistroDiarioRepository implements IRegistroDiarioRepository {
   async getRelatorioFromObraid(idObra: number): Promise<RegistroDiario[]> {
     return await handleApiResponse<RegistroDiario[]>(
       api.get(`${apiUrl}/get-relatorio-from-obra/${idObra}`),
+    );
+  }
+
+  async duplicarRelatorio(idObra: number, idRegistro : number): Promise<RegistroDiario> {
+    return await handleApiResponse<RegistroDiario>(
+      api.post(`${apiUrl}/obra/${idObra}/registro/${idRegistro}/duplicar`),
     );
   }
 
@@ -60,5 +67,11 @@ export class RegistroDiarioRepository implements IRegistroDiarioRepository {
 
   async put(registroDiario: RegistroDiario): Promise<void> {
     await handleApiResponse(api.put(`${apiUrl}/${registroDiario.id}`, registroDiario));
+  }
+
+  uploadMidias(registroId: number, formData: FormData) {
+    return api.post(`${apiUrlFotoRegistro}/${registroId}`, formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
   }
 }

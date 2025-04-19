@@ -8,7 +8,7 @@ export class LoginService {
 
   async logar(login: Login): Promise<{ success: boolean; message?: string; data?: any }> {
     try {
-      const data = await this.loginRepository.logar(login); 
+      const data = await this.loginRepository.logar(login);
       const userStore = useUserStore();
       userStore.setUserAtual(data.nomeUser, data.email);
       const { token, refreshToken, expiration } = data;

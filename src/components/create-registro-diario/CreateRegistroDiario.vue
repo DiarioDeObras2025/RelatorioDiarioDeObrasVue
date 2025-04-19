@@ -122,10 +122,31 @@ const salvarRegistro = async () => {
       data: registro.value.data!,
     };
 
+    let registroSalvo: RegistroDiario;
     if (registro.value.id === 0) {
-      await registroRepo.create(payload);
+      registroSalvo = await registroRepo.create(payload); // precisa retornar o registro com id
     } else {
       await registroRepo.update(payload);
+      registroSalvo = registro.value;
+    }
+
+    // Agora envia os arquivos
+    if (midiasSelecionadas.value.length > 0) {
+      const formData = new FormData();
+
+      const metadados = midiasSelecionadas.value.map((midia) => ({
+        NomeArquivo: midia.file.name,
+        descricao: midia.descricao || "", // garante que sempre terá descrição (mesmo que vazia)
+        categoria: midia.categoria || "", // garante que sempre terá categoria (mesmo que vazia)
+      }));
+      midiasSelecionadas.value.forEach((midia) => {
+        formData.append("arquivos", midia.file);
+      });
+
+      // Aqui você envia os metadados como JSON
+      formData.append("metadadosJson", JSON.stringify(metadados));
+
+      await registroRepo.uploadMidias(registroSalvo.id, formData);
     }
 
     showToast("Registro salvo com sucesso!", "success");
@@ -140,6 +161,89 @@ const salvarRegistro = async () => {
 
 const voltar = () => {
   router.go(-1);
+};
+
+const inputArquivos = ref<HTMLInputElement | null>(null);
+const midiasSelecionadas = ref<
+  Array<{
+    file: File;
+    url: string;
+    descricao: string; // Mude para string (não opcional)
+    categoria: string; // Mude para string (não opcional)
+  }>
+>([]);
+
+const abrirSeletorArquivos = () => {
+  inputArquivos.value?.click();
+};
+
+const handleArquivosSelecionados = (event: Event) => {
+  const arquivos = (event.target as HTMLInputElement).files;
+  if (!arquivos) return;
+
+  for (let i = 0; i < arquivos.length; i++) {
+    const file = arquivos[i];
+
+    if (midiasSelecionadas.value.length >= 3) {
+      showToast("Você pode adicionar no máximo 3 arquivos.", "info");
+      break;
+    }
+
+    if (!file.type.startsWith("image/")) continue;
+
+    redimensionarImagem(file).then((compressedFile) => {
+      const url = URL.createObjectURL(compressedFile);
+      midiasSelecionadas.value.push({
+        file: compressedFile,
+        url,
+        descricao: "", // Inicia vazio
+        categoria: "", // Inicia vazio
+      });
+    });
+  }
+};
+
+const redimensionarImagem = (file: File): Promise<File> => {
+  return new Promise((resolve) => {
+    const img = new Image();
+    const canvas = document.createElement("canvas");
+    const reader = new FileReader();
+
+    reader.onload = (e) => {
+      if (!e.target?.result) return;
+
+      img.onload = () => {
+        const MAX_WIDTH = 1024;
+        const scale = MAX_WIDTH / img.width;
+        const width = MAX_WIDTH;
+        const height = img.height * scale;
+
+        canvas.width = width;
+        canvas.height = height;
+
+        const ctx = canvas.getContext("2d");
+        if (!ctx) return;
+
+        ctx.drawImage(img, 0, 0, width, height);
+        canvas.toBlob(
+          (blob) => {
+            if (blob) {
+              const resizedFile = new File([blob], file.name, { type: file.type });
+              resolve(resizedFile);
+            } else {
+              resolve(file); // fallback: envia original
+            }
+          },
+          file.type,
+          0.7,
+        ); // 0.7 = qualidade (de 0 a 1)
+      };
+
+      img.src = e.target.result as string;
+    };
+
+    reader.readAsDataURL(file);
+  });
 };
 </script>
 
@@ -216,8 +320,114 @@ const voltar = () => {
         </v-col>
       </v-row>
 
+      <!-- Seção de Fotos e Vídeos (Nova seção) -->
+      <v-expansion-panels class="mt-4">
+        <v-expansion-panel>
+          <v-expansion-panel-title>
+            <v-icon icon="mdi-camera" class="mr-2"></v-icon>
+            Fotos e Vídeos
+          </v-expansion-panel-title>
+          <v-expansion-panel-text>
+            <!-- Área de upload visual -->
+            <v-card variant="outlined" class="mb-4">
+              <v-card-text class="text-center py-8">
+                <v-icon icon="mdi-cloud-upload" size="48" color="primary" class="mb-2" />
+                <div class="text-h6">Arraste e solte fotos/vídeos aqui</div>
+                <div class="text-body-2 text-medium-emphasis mt-2">ou</div>
+                <v-btn
+                  color="primary"
+                  variant="outlined"
+                  class="mt-4"
+                  prepend-icon="mdi-folder-image"
+                  @click="abrirSeletorArquivos"
+                >
+                  Selecione arquivos
+                </v-btn>
+                <input
+                  ref="inputArquivos"
+                  type="file"
+                  multiple
+                  accept="image/*,video/*"
+                  style="display: none"
+                  @change="handleArquivosSelecionados"
+                />
+                <div class="text-caption text-medium-emphasis mt-2">
+                  Formatos suportados: JPG, PNG, MP4 (Máx. 10MB cada)
+                </div>
+              </v-card-text>
+            </v-card>
+
+            <!-- Pré-visualização das mídias selecionadas -->
+            <div v-if="midiasSelecionadas.length" class="d-flex flex-wrap gap-4">
+              <v-card
+                v-for="(midia, index) in midiasSelecionadas"
+                :key="index"
+                width="220"
+                elevation="2"
+                class="position-relative"
+              >
+                <!-- Imagem quadrada -->
+                <v-img
+                  v-if="midia.file.type.startsWith('image/')"
+                  :src="midia.url"
+                  height="220"
+                  width="220"
+                  cover
+                  style="aspect-ratio: 1/1"
+                ></v-img>
+
+                <!-- Vídeo (mantém proporção original) -->
+                <div
+                  v-else-if="midia.file.type.startsWith('video/')"
+                  style="height: 220px; width: 220px; background: #000"
+                >
+                  <video
+                    :src="midia.url"
+                    style="object-fit: contain; height: 100%; width: 100%"
+                    muted
+                    autoplay
+                    loop
+                  ></video>
+                </div>
+
+                <!-- Campos de metadados -->
+                <v-card-text class="pa-2">
+                  <v-text-field
+                    v-model="midia.descricao"
+                    label="Descrição"
+                    variant="outlined"
+                    density="compact"
+                    hide-details
+                    class="mb-2"
+                  ></v-text-field>
+                  <v-select
+                    v-model="midia.categoria"
+                    label="Categoria"
+                    :items="['Estrutura', 'Acabamento', 'Instalações', 'Documentação']"
+                    variant="outlined"
+                    density="compact"
+                    hide-details
+                  ></v-select>
+                </v-card-text>
+
+                <!-- Botão para remover -->
+                <v-btn
+                  icon="mdi-close"
+                  size="x-small"
+                  color="error"
+                  variant="flat"
+                  class="position-absolute"
+                  style="top: -8px; right: -8px"
+                  @click="midiasSelecionadas.splice(index, 1)"
+                ></v-btn>
+              </v-card>
+            </div>
+          </v-expansion-panel-text>
+        </v-expansion-panel>
+      </v-expansion-panels>
+
       <!-- Painéis Expansíveis -->
-      <v-expansion-panels multiple class="mt-4">
+      <v-expansion-panels multiple>
         <!-- Equipe -->
         <v-expansion-panel>
           <v-expansion-panel-title>
