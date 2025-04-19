@@ -6,7 +6,12 @@
       </div>
       <h2 class="titulo">Diário de Obras</h2>
       <text-field variant="underlined" label="Nome da sua empresa" required v-model="nomeEmpresa" />
-      <text-field variant="underlined" label="Responsável pela empresa" required v-model="responsavel" />
+      <text-field
+        variant="underlined"
+        label="Responsável pela empresa"
+        required
+        v-model="responsavel"
+      />
       <text-field
         variant="underlined"
         label="Telefone"
@@ -57,16 +62,15 @@ const telefoneValido = (v: string) => {
 
 async function logar() {
   isLoading.value = true;
-  try{
+  try {
     const empresa = new Empresa(0, nomeEmpresa.value, telefone.value, responsavel.value);
     const result = await service.createEmpresa(empresa);
-    if(result.success){
+    if (result.success) {
       empresaStore.setEmpresaAtual(result.data);
       goToCreateUser();
-    }else{
+    } else {
       showToast(result.message!, "red");
     }
-    
   } catch (error) {
     showToast(error instanceof Error ? error.message : "Erro desconhecido", "red");
   } finally {

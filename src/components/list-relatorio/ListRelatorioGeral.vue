@@ -171,7 +171,7 @@ onMounted(() => {
           </div>
         </template>
 
-        <template #bottom>
+        <!-- <template #bottom>
           <div class="d-flex justify-space-between align-center pa-2 w-100">
             <div class="text-caption text-medium-emphasis">
               Total de {{ relatorioEmpresa.length }} relatórios
@@ -187,7 +187,7 @@ onMounted(() => {
               </v-btn>
             </div>
           </div>
-        </template>
+        </template> -->
       </v-data-table>
     </v-card>
 

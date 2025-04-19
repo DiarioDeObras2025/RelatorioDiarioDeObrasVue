@@ -10,4 +10,5 @@ export interface IRegistroDiarioRepository {
   getRelatorioFromObraid(idObra: number): Promise<RegistroDiario[]>;
   gerarPdf(idRegistro: number, idObra: number): void;
   getRelatorioGeral(): Promise<ListRelatorioGeral[]>;
+  duplicarRelatorio(idObra: number, idRegistro : number): Promise<RegistroDiario>;
 }

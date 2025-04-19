@@ -55,7 +55,7 @@ export class AuthService {
       throw new Error("Tokens ausentes");
     }
 
-    const response = await fetch(`${apiUrl}/Auth/refresh-token`, { 
+    const response = await fetch(`${apiUrl}/Auth/refresh-token`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

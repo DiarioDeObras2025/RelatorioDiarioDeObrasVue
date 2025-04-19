@@ -5,6 +5,8 @@ import { onMounted, ref } from "vue";
 import Btn from "@/@shared/components/button/Btn.vue";
 import { useNavigation } from "@/composables/navigation/Navigation.composable";
 import { useRoute } from "vue-router";
+import { useToast } from "@/composables/toast/Toast.composable";
+const { showToast } = useToast();
 
 const repository = new RegistroDiarioRepository();
 const loading = ref(true);
@@ -73,6 +75,21 @@ const getClimaColor = (condicao: any) => {
   ];
   return colors[condicao] || "grey";
 };
+
+async function duplicarRegistro(idObra: number, idRegistro: number) {
+  try {
+    const response = await repository.duplicarRelatorio(idObra, idRegistro);
+    showToast('Redirecionando para o novo relatório...');
+
+    setTimeout(() => {
+      goToEditRegistro(response.id);
+    }, 1500);
+    
+  } catch (error) {
+    showToast('Erro ao duplicar relatório!', 'red');
+  }
+}
+
 </script>
 
 <template>
@@ -133,14 +150,31 @@ const getClimaColor = (condicao: any) => {
                 </v-col>
               </v-row>
 
-              <div class="d-flex justify-end mt-4" style="gap: 8px">
-                <btn text="Editar" variant="outlined" @click="goToEditRegistro(relatorio.id)"></btn>
+              <div class="d-flex justify-space-between mt-4">
+                <!-- Botão Duplicar à esquerda -->
                 <btn
-                  text="Gerar PDF"
+                  text="Duplicar relatório"
                   variant="tonal"
-                  color="primary"
-                  @click="gerarPDF(relatorio.id, relatorio.obraId)"
+                  prepend-icon="mdi-content-copy"
+                  @click="duplicarRegistro(relatorio.obraId, relatorio.id)"
                 ></btn>
+
+                <!-- Grupo de botões à direita -->
+                <div style="gap: 8px" class="d-flex">
+                  <btn
+                    text="Editar"
+                    variant="tonal"
+                    prepend-icon="mdi-pencil"
+                    @click="goToEditRegistro(relatorio.id)"
+                  ></btn>
+                  <btn
+                    text="Gerar PDF"
+                    variant="tonal"
+                    color="primary"
+                    prepend-icon="mdi-file-pdf-box"
+                    @click="gerarPDF(relatorio.id, relatorio.obraId)"
+                  ></btn>
+                </div>
               </div>
             </div>
           </v-expansion-panel-text>
