@@ -65,6 +65,10 @@ export interface Material {
   unidade: string;
 }
 
+export interface Atividades {
+  descricao: string;
+}
+
 export interface MembroEquipe {
   nome: string;
   cargo: string;
@@ -245,6 +249,15 @@ const redimensionarImagem = (file: File): Promise<File> => {
     reader.readAsDataURL(file);
   });
 };
+
+function adicionarAtividade() {
+  registro.value.atividades ||= [];
+  registro.value.atividades.push({ descricao: "" });
+}
+
+function removerAtividade(index: number) {
+  registro.value.atividades.splice(index, 1);
+}
 </script>
 
 <template>
@@ -286,14 +299,6 @@ const redimensionarImagem = (file: File): Promise<File> => {
         required
       />
 
-      <v-textarea
-        label="Resumo das atividades"
-        v-model="registro.resumo"
-        variant="outlined"
-        rows="3"
-        required
-      />
-
       <v-row>
         <v-col cols="12" md="6">
           <v-text-field
@@ -320,11 +325,58 @@ const redimensionarImagem = (file: File): Promise<File> => {
         </v-col>
       </v-row>
 
-      <!-- Seção de Fotos e Vídeos (Nova seção) -->
+      <!-- Dentro da tag <template>, adicione este novo painel expansível junto aos outros -->
       <v-expansion-panels class="mt-4">
         <v-expansion-panel>
           <v-expansion-panel-title>
-            <v-icon icon="mdi-camera" class="mr-2"></v-icon>
+            <v-icon icon="mdi-clipboard-list" color="primary" class="mr-2"></v-icon>
+            Atividades Realizadas
+          </v-expansion-panel-title>
+          <v-expansion-panel-text>
+            <v-card v-for="(atividade, index) in registro.atividades" :key="index" class="mb-4">
+              <v-card-text>
+                <v-row>
+                  <v-col >
+                    <v-text-field
+                      label="Descrição da Atividade"
+                      v-model="atividade.descricao"
+                      prepend-inner-icon="mdi-text"
+                      required
+                      icon-color="primary"
+                      color="primary"
+                      variant="outlined"
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="1" class="d-flex align-center">
+                    <v-btn
+                      icon="mdi-delete"
+                      variant="text"
+                      color="error"
+                      @click="removerAtividade(index)"
+                    ></v-btn>
+                  </v-col>
+                </v-row>
+              </v-card-text>
+            </v-card>
+
+            <v-btn
+              color="primary"
+              variant="outlined"
+              @click="adicionarAtividade"
+              prepend-icon="mdi-plus"
+              class="mt-2"
+            >
+              Adicionar Atividade
+            </v-btn>
+          </v-expansion-panel-text>
+        </v-expansion-panel>
+      </v-expansion-panels>
+
+      <!-- Seção de Fotos e Vídeos (Nova seção) -->
+      <v-expansion-panels>
+        <v-expansion-panel>
+          <v-expansion-panel-title>
+            <v-icon icon="mdi-camera" class="mr-2" color="primary"></v-icon>
             Fotos e Vídeos
           </v-expansion-panel-title>
           <v-expansion-panel-text>
@@ -399,6 +451,7 @@ const redimensionarImagem = (file: File): Promise<File> => {
                     density="compact"
                     hide-details
                     class="mb-2"
+                    icon-color="primary"
                   ></v-text-field>
                   <v-select
                     v-model="midia.categoria"
@@ -431,7 +484,7 @@ const redimensionarImagem = (file: File): Promise<File> => {
         <!-- Equipe -->
         <v-expansion-panel>
           <v-expansion-panel-title>
-            <v-icon icon="mdi-account-group" class="mr-2"></v-icon>
+            <v-icon icon="mdi-account-group" class="mr-2" color="primary"></v-icon>
             Equipe
           </v-expansion-panel-title>
           <v-expansion-panel-text>
@@ -444,6 +497,7 @@ const redimensionarImagem = (file: File): Promise<File> => {
                       v-model="membro.nome"
                       prepend-inner-icon="mdi-account"
                       required
+                      icon-color="primary"
                     ></v-text-field>
                   </v-col>
                   <v-col cols="6" sm="3">
@@ -470,6 +524,7 @@ const redimensionarImagem = (file: File): Promise<File> => {
                       label="Observações"
                       v-model="membro.observacao"
                       rows="1"
+                        icon-color="primary"
                     ></v-textarea>
                   </v-col>
                 </v-row>
@@ -492,6 +547,7 @@ const redimensionarImagem = (file: File): Promise<File> => {
               v-model="registro.horasTrabalhadas"
               min="0"
               suffix="h"
+              icon-color="primary"
               prepend-inner-icon="mdi-clock-outline"
             ></v-text-field>
           </v-expansion-panel-text>
@@ -500,7 +556,7 @@ const redimensionarImagem = (file: File): Promise<File> => {
         <!-- Materiais -->
         <v-expansion-panel>
           <v-expansion-panel-title>
-            <v-icon icon="mdi-package-variant" class="mr-2"></v-icon>
+            <v-icon icon="mdi-package-variant" class="mr-2" color="primary"></v-icon>
             Materiais e Equipamentos
           </v-expansion-panel-title>
           <v-expansion-panel-text>
@@ -524,6 +580,7 @@ const redimensionarImagem = (file: File): Promise<File> => {
                           type="number"
                           min="0"
                           step="0.01"
+                          icon-color="primary"
                         ></v-text-field>
                       </v-col>
                       <v-col cols="5" sm="3">
@@ -560,6 +617,7 @@ const redimensionarImagem = (file: File): Promise<File> => {
                   label="Equipamentos Utilizados"
                   v-model="registro.equipamentos"
                   prepend-inner-icon="mdi-tools"
+                    icon-color="primary"
                 ></v-text-field>
               </v-col>
 
@@ -569,6 +627,7 @@ const redimensionarImagem = (file: File): Promise<File> => {
                   type="number"
                   v-model="registro.consumoCimento"
                   min="0"
+                    icon-color="primary"
                   prepend-inner-icon="mdi-sack"
                 ></v-text-field>
               </v-col>
@@ -579,7 +638,7 @@ const redimensionarImagem = (file: File): Promise<File> => {
         <!-- Progresso da Obra -->
         <v-expansion-panel>
           <v-expansion-panel-title>
-            <v-icon icon="mdi-progress-check" class="mr-2" />
+            <v-icon icon="mdi-progress-check" class="mr-2" color="primary"/>
             Progresso da Obra
           </v-expansion-panel-title>
           <v-expansion-panel-text>
@@ -608,6 +667,7 @@ const redimensionarImagem = (file: File): Promise<File> => {
               v-model="registro.areaExecutada"
               variant="outlined"
               min="0"
+                icon-color="primary"
               prepend-inner-icon="mdi-ruler-square"
             />
           </v-expansion-panel-text>
@@ -616,7 +676,7 @@ const redimensionarImagem = (file: File): Promise<File> => {
         <!-- Ocorrências -->
         <v-expansion-panel>
           <v-expansion-panel-title>
-            <v-icon icon="mdi-alert" class="mr-2" />
+            <v-icon icon="mdi-alert" class="mr-2" color="red"/>
             Ocorrências
           </v-expansion-panel-title>
           <v-expansion-panel-text>
@@ -626,6 +686,7 @@ const redimensionarImagem = (file: File): Promise<File> => {
               rows="2"
               variant="outlined"
               prepend-inner-icon="mdi-alert"
+                icon-color="primary"
             />
             <v-row class="mt-4">
               <v-col cols="12" md="6">
@@ -679,4 +740,5 @@ const redimensionarImagem = (file: File): Promise<File> => {
   border-color: var(--v-primary-base);
   transition: 0.2s ease;
 }
+
 </style>

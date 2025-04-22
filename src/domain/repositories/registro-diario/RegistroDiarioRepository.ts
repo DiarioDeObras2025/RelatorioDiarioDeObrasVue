@@ -26,7 +26,7 @@ export class RegistroDiarioRepository implements IRegistroDiarioRepository {
     );
   }
 
-  async duplicarRelatorio(idObra: number, idRegistro : number): Promise<RegistroDiario> {
+  async duplicarRelatorio(idObra: number, idRegistro: number): Promise<RegistroDiario> {
     return await handleApiResponse<RegistroDiario>(
       api.post(`${apiUrl}/obra/${idObra}/registro/${idRegistro}/duplicar`),
     );

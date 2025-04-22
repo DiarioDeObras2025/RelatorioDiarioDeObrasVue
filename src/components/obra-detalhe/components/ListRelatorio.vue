@@ -79,17 +79,15 @@ const getClimaColor = (condicao: any) => {
 async function duplicarRegistro(idObra: number, idRegistro: number) {
   try {
     const response = await repository.duplicarRelatorio(idObra, idRegistro);
-    showToast('Redirecionando para o novo relatório...');
+    showToast("Redirecionando para o novo relatório...");
 
     setTimeout(() => {
       goToEditRegistro(response.id);
     }, 1500);
-    
   } catch (error) {
-    showToast('Erro ao duplicar relatório!', 'red');
+    showToast("Erro ao duplicar relatório!", "red");
   }
 }
-
 </script>
 
 <template>

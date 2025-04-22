@@ -1,4 +1,5 @@
 import type {
+  Atividades,
   Material,
   MembroEquipe,
 } from "@/components/create-registro-diario/CreateRegistroDiario.vue";
@@ -29,7 +30,7 @@ export class RegistroDiario {
     public id: number = 0,
     public data: Date | null = null,
     public obraId: number = 0,
-    public resumo: string = "",
+    public atividades: Atividades[] = [],
     public condicoesClimaticas: CondicaoClimaticaEnum = CondicaoClimaticaEnum.NUBLADO,
     public equipe: MembroEquipe[] = [],
     public horasTrabalhadas: number = 8,
@@ -53,7 +54,7 @@ export class RegistroDiario {
       0, // id
       null, // data
       0, // obraId
-      "", // resumo
+      [], // atividades
       CondicaoClimaticaEnum.ENSOLARADO, // condicoesClimaticas
       [], // equipe (agora é MembroEquipe[])
       8, // horasTrabalhadas
@@ -78,7 +79,7 @@ export class RegistroDiario {
       partial.id ?? 0,
       partial.data ? new Date(partial.data) : new Date(),
       partial.obraId ?? 0,
-      partial.resumo ?? "",
+      partial.atividades ?? [],
       partial.condicoesClimaticas ?? CondicaoClimaticaEnum.ENSOLARADO,
       partial.equipe ?? [],
       partial.horasTrabalhadas ?? 8,

@@ -73,7 +73,7 @@ function acessarRelatorios(id: number) {
 }
 
 function acessarDetalhes(id: number) {
-  router.push(`/obra/${id}`);
+  goToObraDetalhePage(id);
 }
 
 const formatDate = (date: Date | null | undefined) =>

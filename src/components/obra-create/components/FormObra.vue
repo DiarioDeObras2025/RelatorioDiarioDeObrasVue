@@ -122,7 +122,7 @@ function formatDate(date: Date | null) {
         <v-row>
           <v-col cols="12">
             <v-text-field
-              label="Nome da Obra"
+              label="Contratante"
               v-model="obra.nome"
               variant="outlined"
               prepend-inner-icon="mdi-form-textbox"
