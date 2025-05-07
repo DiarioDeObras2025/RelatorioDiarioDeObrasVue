@@ -19,7 +19,7 @@
 
     <!-- Menu Principal (Desktop) -->
     <div class="d-none d-md-flex">
-      <v-btn text to="/obra" exact>
+      <v-btn text to="/obra">
         <v-icon left>mdi-home</v-icon>
         Início
       </v-btn>
@@ -34,10 +34,29 @@
         Relatórios
       </v-btn>
 
-      <v-btn text to="/configuracoes">
+      <v-btn text to="/configuracoes" disabled>
         <v-icon left>mdi-cog</v-icon>
         Configurações
       </v-btn>
+
+      <v-menu offset-y>
+        <template v-slot:activator="{ props }">
+          <v-btn text v-bind="props">
+            <v-icon left>mdi-cog</v-icon>
+            Cadastros
+            <v-icon right small>mdi-chevron-down</v-icon>
+          </v-btn>
+        </template>
+        <v-list>
+          <v-list-item @click="goToListUser">
+            <v-list-item-icon>
+              <v-icon>mdi-account-multiple</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>Usuários</v-list-item-title>
+          </v-list-item>
+          <!-- Adicione outros submenus se quiser -->
+        </v-list>
+      </v-menu>
     </div>
 
     <!-- Menu do Usuário -->
@@ -82,14 +101,14 @@
   <v-navigation-drawer v-model="drawer" absolute temporary>
     <v-list nav dense>
       <v-list-item-group>
-        <v-list-item to="/" exact>
+        <v-list-item to="/obras">
           <v-list-item-icon>
             <v-icon>mdi-home</v-icon>
           </v-list-item-icon>
           <v-list-item-title>Início</v-list-item-title>
         </v-list-item>
 
-        <v-list-item to="/obras">
+        <v-list-item to="/todas-obras">
           <v-list-item-icon>
             <v-icon>mdi-hard-hat</v-icon>
           </v-list-item-icon>
@@ -103,11 +122,18 @@
           <v-list-item-title>Relatórios</v-list-item-title>
         </v-list-item>
 
-        <v-list-item to="/configuracoes">
+        <v-list-item to="/configuracoes" disabled>
           <v-list-item-icon>
             <v-icon>mdi-cog</v-icon>
           </v-list-item-icon>
           <v-list-item-title>Configurações</v-list-item-title>
+        </v-list-item>
+
+        <v-list-item to="/usuarios">
+          <v-list-item-icon>
+            <v-icon>mdi-account-multiple</v-icon>
+          </v-list-item-icon>
+          <v-list-item-title>Usuários</v-list-item-title>
         </v-list-item>
       </v-list-item-group>
     </v-list>
@@ -122,7 +148,7 @@ import { useUserStore } from "@/stores/User";
 const userStore = useUserStore();
 
 const drawer = ref(false);
-const { goToListGeralRelatorio, goToShowAllObras, goToListObra } = useNavigation();
+const { goToListGeralRelatorio, goToShowAllObras, goToListObra, goToListUser } = useNavigation();
 
 const userName = computed(() => userStore.nomeUser || "Usuário");
 const userEmail = computed(() => userStore.email);

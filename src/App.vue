@@ -30,7 +30,7 @@ const aplicarContainer = computed(() => !rotasSemContainer.includes(route.path.t
     <div :class="{ container: aplicarContainer && isDesktop }">
       <router-view />
 
-      <footer v-if="!isDesktop && aplicarContainer" class="footer-nav">
+      <!-- <footer v-if="!isDesktop && aplicarContainer" class="footer-nav">
         <router-link to="/obra">
           <v-icon>mdi-home</v-icon>
         </router-link>
@@ -40,7 +40,7 @@ const aplicarContainer = computed(() => !rotasSemContainer.includes(route.path.t
         <router-link to="/perfil">
           <v-icon>mdi-account</v-icon>
         </router-link>
-      </footer>
+      </footer> -->
     </div>
 
     <Toast

@@ -14,7 +14,7 @@ interface Props {
   variant?: any;
   rules?: Array<(v: any) => boolean | string>;
   required?: boolean;
-  mask?: string | { mask: string[]; eager?: boolean };
+  mask?: string | { mask: string[]; eager?: boolean; tokens?: Record<string, { pattern: RegExp; repeated?: boolean }> };
   placeholder?: string;
 }
 

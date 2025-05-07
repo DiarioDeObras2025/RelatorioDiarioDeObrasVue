@@ -8,3 +8,13 @@ export class User {
     public empresaId: string,
   ) {}
 }
+
+export class UserResumido {
+  constructor(
+    public id: number,
+    public nome: string,
+    public email: string,
+    public phoneNumber: string,
+    public senha?: string,
+  ) {}
+}

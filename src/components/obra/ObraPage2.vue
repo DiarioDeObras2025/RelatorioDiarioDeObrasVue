@@ -303,6 +303,7 @@ const formatarData = (dataString: string | Date): string => {
             v-for="obra in obrasRecentes"
             :key="obra.id"
             class="work-card"
+            color="#E6F4EA"
             @click="goToObraDetalhePage(obra.id)"
           >
             <v-card-item>

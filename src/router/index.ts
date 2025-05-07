@@ -13,6 +13,8 @@ import CreateRegistroDiarioVue from "@/components/create-registro-diario/CreateR
 import EditRegistroDiarioVue from "@/components/edit-registro-diario/EditRegistroDiario.vue";
 import ListRelatorioGeralVue from "@/components/list-relatorio/ListRelatorioGeral.vue";
 import ShowAllObrasVue from "@/components/showAllObras/ShowAllObras.vue";
+import ListUserPageVue from "@/components/list-user/ListUserPage.vue";
+import RelatorioViewPageVue from "@/components/registro-diario-view/RelatorioViewPage.vue";
 
 const routes = [
   // ✅ Redirecionamento simples sem component
@@ -73,7 +75,16 @@ const routes = [
     name: RouteName.TODAS_OBRAS,
     component: ShowAllObrasVue,
   },
-
+  {
+    path: RoutePath.LIST_USER,
+    name: RouteName.LIST_USER,
+    component: ListUserPageVue,
+  },
+  {
+    path: RoutePath.RELATORIO_VIEW,
+    name: RouteName.RELATORIO_VIEW,
+    component: RelatorioViewPageVue,
+  },
   {
     path: "/:pathMatch(.*)*",
     redirect: RoutePath.LIST_OBRA,

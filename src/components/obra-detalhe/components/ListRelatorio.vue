@@ -14,7 +14,7 @@ const registroDiario = ref<RegistroDiario[]>([]);
 const route = useRoute();
 
 const obraId = Number(route.params.id);
-const { goToEditRegistroDiario } = useNavigation();
+const { goToEditRegistroDiario, goToViewRegistro } = useNavigation();
 
 async function getAllFromObraId() {
   loading.value = true;
@@ -29,6 +29,10 @@ async function getAllFromObraId() {
 
 function goToEditRegistro(id: number) {
   goToEditRegistroDiario(id);
+}
+
+function goToViewRegistros(id: number) {
+  goToViewRegistro(id);
 }
 
 function gerarPDF(idRelatorio: number, idObra: number) {
@@ -88,6 +92,17 @@ async function duplicarRegistro(idObra: number, idRegistro: number) {
     showToast("Erro ao duplicar relatório!", "red");
   }
 }
+
+async function deletarRegistro(id: number) {
+  try {
+    await repository.delete(id);
+    showToast("Relatório deletado com sucesso!");
+    await getAllFromObraId(); // Recarrega a lista
+  } catch (error) {
+    console.error("Erro ao deletar relatório:", error);
+    showToast("Erro ao deletar relatório!", "red");
+  }
+}
 </script>
 
 <template>
@@ -115,32 +130,19 @@ async function duplicarRegistro(idObra: number, idRegistro: number) {
             <div class="relatorio-detalhes pa-4">
               <v-row>
                 <v-col cols="12" md="6">
-                  <div class="mb-3">
-                    <v-icon
-                      icon="mdi-text-box-edit-outline"
-                      color="blue-grey"
-                      class="mr-2"
-                    ></v-icon>
-                    <strong>Resumo:</strong> {{ relatorio.resumo || "Nenhum resumo fornecido" }}
-                  </div>
+                  <!-- <div class="mb-3">
+                    <v-icon icon="mdi-text-box-edit-outline" color="blue-grey" class="mr-2"></v-icon>
+                  </div> -->
 
-                  <div class="mb-3">
-                    <v-icon
-                      :icon="getClimaIcon(relatorio.condicoesClimaticas || 0)"
-                      :color="getClimaColor(relatorio.condicoesClimaticas || 0)"
-                      class="mr-2"
-                    ></v-icon>
+                  <!-- <div class="mb-3">
+                    <v-icon :icon="getClimaIcon(relatorio.condicoesClimaticas || 0)"
+                      :color="getClimaColor(relatorio.condicoesClimaticas || 0)" class="mr-2"></v-icon>
                     <strong>Clima:</strong>
                     {{ [relatorio.condicoesClimaticas || 0] }}
-                  </div>
+                  </div> -->
                 </v-col>
 
                 <v-col cols="12" md="6">
-                  <div class="mb-3">
-                    <v-icon icon="mdi-clock-outline" color="orange" class="mr-2"></v-icon>
-                    <strong>Horas trabalhadas:</strong> {{ relatorio.horasTrabalhadas || 0 }}h
-                  </div>
-
                   <div class="mb-3">
                     <v-icon icon="mdi-alert-box-outline" color="red" class="mr-2"></v-icon>
                     <strong>Ocorrências:</strong> {{ relatorio.ocorrencias || "Nenhuma" }}
@@ -148,32 +150,55 @@ async function duplicarRegistro(idObra: number, idRegistro: number) {
                 </v-col>
               </v-row>
 
-              <div class="d-flex justify-space-between mt-4">
-                <!-- Botão Duplicar à esquerda -->
-                <btn
-                  text="Duplicar relatório"
-                  variant="tonal"
-                  prepend-icon="mdi-content-copy"
-                  @click="duplicarRegistro(relatorio.obraId, relatorio.id)"
-                ></btn>
-
-                <!-- Grupo de botões à direita -->
-                <div style="gap: 8px" class="d-flex">
-                  <btn
-                    text="Editar"
-                    variant="tonal"
-                    prepend-icon="mdi-pencil"
-                    @click="goToEditRegistro(relatorio.id)"
-                  ></btn>
+              <v-row class="mt-4" dense>
+                <v-col cols="12" md="4">
                   <btn
                     text="Gerar PDF"
                     variant="tonal"
                     color="primary"
                     prepend-icon="mdi-file-pdf-box"
                     @click="gerarPDF(relatorio.id, relatorio.obraId)"
+                    block
                   ></btn>
-                </div>
-              </div>
+                </v-col>
+                <v-col cols="12" md="4">
+                  <btn
+                    text="Duplicar relatório"
+                    variant="tonal"
+                    prepend-icon="mdi-content-copy"
+                    @click="duplicarRegistro(relatorio.obraId, relatorio.id)"
+                    block
+                  ></btn>
+                </v-col>
+                <v-col cols="12" md="4">
+                  <btn
+                    text="Visualizar relatório"
+                    variant="tonal"
+                    prepend-icon="mdi-content-copy"
+                    @click="goToViewRegistros(relatorio.id)"
+                    block
+                  ></btn>
+                </v-col>
+                <v-col cols="12" md="4">
+                  <btn
+                    text="Editar"
+                    variant="tonal"
+                    prepend-icon="mdi-pencil"
+                    @click="goToEditRegistro(relatorio.id)"
+                    block
+                  ></btn>
+                </v-col>
+                <v-col cols="12" md="4">
+                  <btn
+                    text="Deletar"
+                    variant="tonal"
+                    color="red"
+                    prepend-icon="mdi-delete"
+                    @click="deletarRegistro(relatorio.id)"
+                    block
+                  />
+                </v-col>
+              </v-row>
             </div>
           </v-expansion-panel-text>
         </v-expansion-panel>

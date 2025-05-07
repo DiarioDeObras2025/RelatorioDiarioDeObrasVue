@@ -9,6 +9,8 @@ import {
 import { RegistroDiarioRepository } from "@/domain/repositories/registro-diario/RegistroDiarioRepository";
 import { useToast } from "@/composables/toast/Toast.composable";
 import { useRoute } from "vue-router";
+import { useNavigation } from "@/composables/navigation/Navigation.composable";
+const { goToObraDetalhePage } = useNavigation();
 
 const props = defineProps<{ registro?: RegistroDiario }>();
 const router = useRouter();
@@ -147,14 +149,13 @@ const salvarRegistro = async () => {
         formData.append("arquivos", midia.file);
       });
 
-      // Aqui você envia os metadados como JSON
       formData.append("metadadosJson", JSON.stringify(metadados));
 
       await registroRepo.uploadMidias(registroSalvo.id, formData);
     }
 
-    showToast("Registro salvo com sucesso!", "success");
-    setTimeout(() => router.go(-1), 1000);
+    showToast(`Registro salvo com sucesso!`, "success");
+    goToObraDetalhePage(registroSalvo.obraId);
   } catch (error) {
     console.error(error);
     showToast(error instanceof Error ? error.message : "Erro desconhecido", "red");
@@ -336,7 +337,7 @@ function removerAtividade(index: number) {
             <v-card v-for="(atividade, index) in registro.atividades" :key="index" class="mb-4">
               <v-card-text>
                 <v-row>
-                  <v-col >
+                  <v-col>
                     <v-text-field
                       label="Descrição da Atividade"
                       v-model="atividade.descricao"
@@ -524,7 +525,7 @@ function removerAtividade(index: number) {
                       label="Observações"
                       v-model="membro.observacao"
                       rows="1"
-                        icon-color="primary"
+                      icon-color="primary"
                     ></v-textarea>
                   </v-col>
                 </v-row>
@@ -540,7 +541,7 @@ function removerAtividade(index: number) {
               Adicionar Membro
             </v-btn>
 
-            <v-text-field
+            <!-- <v-text-field
               class="mt-4"
               label="Horas Trabalhadas"
               type="number"
@@ -549,7 +550,7 @@ function removerAtividade(index: number) {
               suffix="h"
               icon-color="primary"
               prepend-inner-icon="mdi-clock-outline"
-            ></v-text-field>
+            ></v-text-field> -->
           </v-expansion-panel-text>
         </v-expansion-panel>
 
@@ -617,11 +618,11 @@ function removerAtividade(index: number) {
                   label="Equipamentos Utilizados"
                   v-model="registro.equipamentos"
                   prepend-inner-icon="mdi-tools"
-                    icon-color="primary"
+                  icon-color="primary"
                 ></v-text-field>
               </v-col>
 
-              <v-col cols="12">
+              <!-- <v-col cols="12">
                 <v-text-field
                   label="Consumo de Cimento (sacos)"
                   type="number"
@@ -630,13 +631,13 @@ function removerAtividade(index: number) {
                     icon-color="primary"
                   prepend-inner-icon="mdi-sack"
                 ></v-text-field>
-              </v-col>
+              </v-col> -->
             </v-row>
           </v-expansion-panel-text>
         </v-expansion-panel>
 
         <!-- Progresso da Obra -->
-        <v-expansion-panel>
+        <!-- <v-expansion-panel>
           <v-expansion-panel-title>
             <v-icon icon="mdi-progress-check" class="mr-2" color="primary"/>
             Progresso da Obra
@@ -671,12 +672,12 @@ function removerAtividade(index: number) {
               prepend-inner-icon="mdi-ruler-square"
             />
           </v-expansion-panel-text>
-        </v-expansion-panel>
+        </v-expansion-panel> -->
 
         <!-- Ocorrências -->
         <v-expansion-panel>
           <v-expansion-panel-title>
-            <v-icon icon="mdi-alert" class="mr-2" color="red"/>
+            <v-icon icon="mdi-alert" class="mr-2" color="red" />
             Ocorrências
           </v-expansion-panel-title>
           <v-expansion-panel-text>
@@ -686,9 +687,9 @@ function removerAtividade(index: number) {
               rows="2"
               variant="outlined"
               prepend-inner-icon="mdi-alert"
-                icon-color="primary"
+              icon-color="primary"
             />
-            <v-row class="mt-4">
+            <!-- <v-row class="mt-4">
               <v-col cols="12" md="6">
                 <v-text-field
                   label="Temperatura (ºC)"
@@ -708,7 +709,7 @@ function removerAtividade(index: number) {
                   prepend-inner-icon="mdi-weather-pouring"
                 />
               </v-col>
-            </v-row>
+            </v-row> -->
           </v-expansion-panel-text>
         </v-expansion-panel>
       </v-expansion-panels>
@@ -740,5 +741,4 @@ function removerAtividade(index: number) {
   border-color: var(--v-primary-base);
   transition: 0.2s ease;
 }
-
 </style>

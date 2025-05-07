@@ -4,6 +4,8 @@ import { RegistroDiarioRepository } from "@/domain/repositories/registro-diario/
 import { ref, onMounted } from "vue";
 import type { DataTableHeader } from "vuetify";
 import { useNavigation } from "@/composables/navigation/Navigation.composable";
+import type { Obra } from "@/domain/entities/obra/Obra";
+import { ObraRepository } from "@/domain/repositories/obra/ObraRepository";
 
 const relatorioEmpresa = ref<ListRelatorioGeral[]>([]);
 const repository = new RegistroDiarioRepository();
@@ -65,8 +67,29 @@ function editarRelatorio(id: number) {
   goToEditRegistroDiario(id);
 }
 
-function novoRelatorio(id: number) {
-  goToCreateRegistroDiario(id);
+// function novoRelatorio(id: number) {
+//   goToCreateRegistroDiario(id);
+// }
+
+const modalEscolhaObra = ref(false);
+const obras = ref<Obra[]>([]);
+const obraSelecionada = ref<number | null>(null);
+const obraRepo = new ObraRepository();
+
+async function novoRelatorio() {
+  try {
+    obras.value = await obraRepo.getAll(); // ou outro método que traga obras da empresa
+    modalEscolhaObra.value = true;
+  } catch (err) {
+    console.error("Erro ao carregar obras:", err);
+  }
+}
+
+function confirmarCriacaoRelatorio() {
+  if (!obraSelecionada.value) return;
+
+  modalEscolhaObra.value = false;
+  goToCreateRegistroDiario(obraSelecionada.value);
 }
 
 onMounted(() => {
@@ -96,13 +119,7 @@ onMounted(() => {
         />
 
         <div class="d-flex gap-2">
-          <v-btn
-            color="primary"
-            variant="flat"
-            prepend-icon="mdi-plus"
-            @click="novoRelatorio"
-            disabled
-          >
+          <v-btn color="primary" variant="flat" prepend-icon="mdi-plus" @click="novoRelatorio">
             Novo Relatório
           </v-btn>
         </div>
@@ -203,7 +220,7 @@ onMounted(() => {
 
             <div class="d-flex align-center mb-1">
               <v-icon icon="mdi-calendar" color="primary" size="small" class="mr-2" />
-              <span class="text-caption">{{ item.data }}</span>
+              <span class="text-caption">{{ formatDate(item.data) }}</span>
             </div>
 
             <div class="d-flex align-center">
@@ -219,21 +236,56 @@ onMounted(() => {
               color="primary"
               size="small"
               density="comfortable"
+              @click="editarRelatorio(item.id)"
+              title="Visualizar/Editar"
             />
           </div>
         </div>
       </v-card>
     </div>
   </v-container>
+
+  <v-dialog v-model="modalEscolhaObra" max-width="500">
+  <v-card>
+    <v-card-title class="text-h6">Selecionar Obra</v-card-title>
+    <v-card-text>
+      <template v-if="obras.length > 0">
+        <v-select
+          v-model="obraSelecionada"
+          :items="obras"
+          item-title="nome"
+          item-value="id"
+          label="Selecione a obra para o novo relatório"
+          outlined
+        />
+      </template>
+      <template v-else>
+        <div class="text-body-2 text-medium-emphasis">
+          ⚠️ Nenhuma obra encontrada. Cadastre uma obra para criar relatórios.
+        </div>
+      </template>
+    </v-card-text>
+    <v-card-actions>
+      <v-spacer />
+      <v-btn text @click="modalEscolhaObra = false">Cancelar</v-btn>
+      <v-btn color="primary" @click="confirmarCriacaoRelatorio" :disabled="!obraSelecionada || obras.length === 0">
+        Confirmar
+      </v-btn>
+    </v-card-actions>
+  </v-card>
+</v-dialog>
+
 </template>
 
 <style scoped>
 .gap-1 {
   gap: 4px;
 }
+
 .gap-2 {
   gap: 8px;
 }
+
 .gap-3 {
   gap: 12px;
 }

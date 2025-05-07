@@ -1,8 +1,11 @@
 import axios from "axios";
-import type { User } from "@/domain/entities/user/User";
+import type { User, UserResumido } from "@/domain/entities/user/User";
 import { HttpStatusCodeEnum } from "@/domain/enums/HttpStatusCode.enum";
 import type { IUserRepository } from "@/domain/interface/user/IUserRepository";
+import { handleApiResponse } from "@/utils/api";
+import api from "@/config/axios";
 
+const baseUrl = import.meta.env.VITE_API_URL;
 export class UserRepository implements IUserRepository {
   private registerAxios = axios.create({
     baseURL: import.meta.env.VITE_API_URL,
@@ -50,5 +53,26 @@ export class UserRepository implements IUserRepository {
         };
       }
     }
+  }
+
+  async ListUser(): Promise<UserResumido[]> {
+    return await handleApiResponse<UserResumido[]>(api.get(`${baseUrl}/auth/get-users`));
+  }
+
+  async AtualizaUser(id: number, userResumido: UserResumido): Promise<UserResumido> {
+    return await handleApiResponse<UserResumido>(
+      api.put(`${baseUrl}/auth/atualizar-usuario/${id}`, userResumido),
+    );
+  }
+
+  async CadastrarUsuarioInterno(user: User): Promise<any> {
+    return await handleApiResponse(
+      api.post(`${baseUrl}/auth/cadastrar-usuario`, {
+        email: user.email,
+        password: user.password,
+        userName: user.userName,
+        phoneNumber: user.phoneNumber,
+      }),
+    );
   }
 }

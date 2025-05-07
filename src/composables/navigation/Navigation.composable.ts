@@ -18,6 +18,16 @@ export function useNavigation() {
     });
   }
 
+  function goToViewRegistro(id: number) {
+    router.push({
+      name: RouteName.RELATORIO_VIEW,
+      params: {
+        id,
+      },
+    });
+  }
+
+  
   const goToCreateObra = () => {
     router.push(RoutePath.CREATE_OBRA);
   };
@@ -63,6 +73,10 @@ export function useNavigation() {
   const goToShowAllObras = () => {
     router.push(RoutePath.TODAS_OBRAS);
   };
+
+  const goToListUser = () => {
+    router.push(RoutePath.LIST_USER);
+  };
   return {
     goToPath,
     goToObraDetalhePage,
@@ -75,5 +89,7 @@ export function useNavigation() {
     goToLogin,
     goToListGeralRelatorio,
     goToShowAllObras,
+    goToListUser,
+    goToViewRegistro
   };
 }

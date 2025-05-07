@@ -1,8 +1,11 @@
 export class Empresa {
   constructor(
-    public id: number,
-    public nome: string,
-    public telefone: string,
-    public responsavel: string,
+    public nomeEmpresa: string,
+    public nomeUsuario: string,
+    public email: string,
+    public password: string,
+    public segmento: string,
+    public cargo: string,
+    public phoneNumber: string,
   ) {}
 }

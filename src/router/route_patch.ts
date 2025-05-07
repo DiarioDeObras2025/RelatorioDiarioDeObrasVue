@@ -10,4 +10,6 @@ export default class RoutePath {
   static readonly EDIT_REGISTRO_DIARIO: string = `/edit-registro-diario/:id`;
   static readonly LIST_RELATORIO_GERAL: string = `/list-relatorio-geral`;
   static readonly TODAS_OBRAS: string = `/todas-obras`;
+  static readonly LIST_USER: string = `/list-user`;
+  static readonly RELATORIO_VIEW: string = `/relatorio/:id/view`;
 }
