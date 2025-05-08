@@ -16,6 +16,7 @@ const rotasSemContainer = [
   RoutePath.LOGIN.toLowerCase(),
   RoutePath.CREATE_USER.toLowerCase(),
   RoutePath.CREATE_EMPRESA.toLowerCase(),
+  RoutePath.RECUPERAR_SENHA.toLowerCase(),
 ];
 
 const aplicarContainer = computed(() => !rotasSemContainer.includes(route.path.toLowerCase()));

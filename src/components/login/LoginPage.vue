@@ -7,30 +7,13 @@
 
       <h2 class="titulo">Diário de Obras</h2>
       <span class="description"> Digite seus dados abaixo </span>
-      <text-field
-        variant="underlined"
-        label="E-mail"
-        v-model="userName"
-        type="email"
-        :rules="[emailValido]"
-        required
-      />
-      <text-field
-        variant="underlined"
-        type="password"
-        required
-        label="Senha"
-        v-model="password"
-        @enter="logar"
-      />
+      <text-field variant="underlined" label="E-mail" v-model="userName" type="email" :rules="[emailValido]" required />
+      <text-field variant="underlined" type="password" required label="Senha" v-model="password" @enter="logar" />
+      <div class="recuperar-senha">
+        <a @click="goToRecuperarSenhas">Esqueci minha senha</a>
+      </div>
       <btn text="Entrar" @click="logar" :tela-inteira="true" :loading="isLoading" />
-      <btn
-        class="mt-3"
-        text="Criar novo Usuário"
-        @click="goToCreateEmpresa"
-        :tela-inteira="true"
-        variant="outlined"
-      />
+      <btn class="mt-3" text="Criar novo Usuário" @click="goToCreateEmpresa" :tela-inteira="true" variant="outlined" />
     </div>
   </div>
 </template>
@@ -51,12 +34,16 @@ const password = ref("");
 const service = new LoginService();
 const isLoading = ref(false);
 
-const { goToListObra, goToCreateEmpreas } = useNavigation();
+const { goToListObra, goToCreateEmpreas, goToRecuperarSenha } = useNavigation();
 
 const emailValido = (v: string) => {
   const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return regex.test(v) || "E-mail inválido";
 };
+
+function goToRecuperarSenhas() {
+  goToRecuperarSenha()
+}
 
 async function logar() {
   isLoading.value = true;
@@ -98,6 +85,19 @@ function goToCreateEmpresa() {
   width: 100%;
   text-align: center;
 }
+
+.recuperar-senha {
+  text-align: center;
+  margin: 0.5rem 0;
+}
+
+.recuperar-senha a {
+  font-size: 0.85rem;
+  color: var(--primary);
+  cursor: pointer;
+  text-decoration: underline;
+}
+
 
 .logo-wrapper {
   display: flex;

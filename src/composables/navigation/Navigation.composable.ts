@@ -77,6 +77,11 @@ export function useNavigation() {
   const goToListUser = () => {
     router.push(RoutePath.LIST_USER);
   };
+
+  const goToRecuperarSenha = () => {
+    router.push(RoutePath.RECUPERAR_SENHA);
+  };
+  
   return {
     goToPath,
     goToObraDetalhePage,
@@ -90,6 +95,7 @@ export function useNavigation() {
     goToListGeralRelatorio,
     goToShowAllObras,
     goToListUser,
-    goToViewRegistro
+    goToViewRegistro,
+    goToRecuperarSenha
   };
 }

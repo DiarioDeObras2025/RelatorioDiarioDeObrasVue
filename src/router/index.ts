@@ -15,6 +15,8 @@ import ListRelatorioGeralVue from "@/components/list-relatorio/ListRelatorioGera
 import ShowAllObrasVue from "@/components/showAllObras/ShowAllObras.vue";
 import ListUserPageVue from "@/components/list-user/ListUserPage.vue";
 import RelatorioViewPageVue from "@/components/registro-diario-view/RelatorioViewPage.vue";
+import RecuperarSenhaPageVue from "@/components/recuperar-senha/RecuperarSenhaPage.vue";
+import ResetarSenhaPageVue from "@/components/resetar-senha/ResetarSenhaPage.vue";
 
 const routes = [
   // ✅ Redirecionamento simples sem component
@@ -86,6 +88,16 @@ const routes = [
     component: RelatorioViewPageVue,
   },
   {
+    path: RoutePath.RECUPERAR_SENHA,
+    name: RouteName.RECUPERAR_SENHA,
+    component: RecuperarSenhaPageVue,
+  },
+  {
+    path: RoutePath.RESETAR_SENHA,
+    name: RouteName.RESETAR_SENHA,
+    component: ResetarSenhaPageVue,
+  },
+  {
     path: "/:pathMatch(.*)*",
     redirect: RoutePath.LIST_OBRA,
   },
@@ -100,7 +112,9 @@ router.beforeEach((to, from, next) => {
   if (
     to.path === RoutePath.LOGIN ||
     to.path === RoutePath.CREATE_USER ||
-    to.path === RoutePath.CREATE_EMPRESA
+    to.path === RoutePath.CREATE_EMPRESA ||
+    to.path === RoutePath.RECUPERAR_SENHA ||
+    to.path === RoutePath.RESETAR_SENHA
   ) {
     return next();
   }

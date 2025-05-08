@@ -12,4 +12,6 @@ export default class RoutePath {
   static readonly TODAS_OBRAS: string = `/todas-obras`;
   static readonly LIST_USER: string = `/list-user`;
   static readonly RELATORIO_VIEW: string = `/relatorio/:id/view`;
+  static readonly RECUPERAR_SENHA: string = `/recuperar-senha`;
+  static readonly RESETAR_SENHA: string = `/reset-password`;
 }

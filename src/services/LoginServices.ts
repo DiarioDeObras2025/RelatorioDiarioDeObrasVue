@@ -18,4 +18,21 @@ export class LoginService {
       return { success: false, message: "Falha ao realizar o login, entre em contato!" };
     }
   }
+
+  async enviarLinkRecuperacaoSenha(email: string): Promise<{ success: boolean; message: string }> {
+    try {
+      const response = await this.loginRepository.enviarLinkRecuperacaoSenha(email);
+      return {
+        success: true,
+        message: response.data.message || "E-mail enviado com sucesso!",
+      };
+    } catch (error: any) {
+      const message = error?.response?.data?.message || "Erro ao enviar e-mail de recuperação";
+      return {
+        success: false,
+        message,
+      };
+    }
+  }
+  
 }
